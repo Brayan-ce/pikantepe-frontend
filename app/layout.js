@@ -1,8 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Script from "next/script";
 import Providers from "./Providers.js";
 import { SidebarProvider } from "./sidebarContext.js";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,18 +59,38 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
-      <head />
+      <head>
+        {/* Google Tag Manager */}
+        <Script
+          id="gtm-head"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PKXNFDBB');`,
+          }}
+        />
+        {/* End Google Tag Manager */}
+      </head>
       <body>
-        <Script 
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-PKXNFDBB"
+            height="0"
+            width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
+        {/* End Google Tag Manager (noscript) */}
+        <Script
           src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
           type="module"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
-        <SidebarProvider>
-          <Providers>
+        <Providers>
+          <SidebarProvider>
             {children}
-          </Providers>
-        </SidebarProvider>
+          </SidebarProvider>
+        </Providers>
       </body>
     </html>
   );

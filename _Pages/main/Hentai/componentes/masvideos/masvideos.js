@@ -9,15 +9,15 @@ import Preview from '@/_Pages/main/Home/componentes/preview';
 
 const BATCH = 5;
 
-export default function MasVideos({ currentId }) {
+export default function MasHentai({ currentId }) {
   const router = useRouter();
   const { locale } = useLanguage();
-  const items = getContenido(locale).videos;
+  const items = getContenido(locale).hentai;
   const [count, setCount] = useState(BATCH);
   const sentinelRef = useRef(null);
 
   const list = (() => {
-    const rest = items.filter((v) => String(v.id) !== String(currentId));
+    const rest = items.filter((h) => String(h.id) !== String(currentId));
     let seed = (Number(currentId) || 7) * 31 + 13;
     function rand() {
       seed = (seed * 1664525 + 1013904223) % 4294967296;
@@ -53,34 +53,34 @@ export default function MasVideos({ currentId }) {
   }, [hasMore, list.length]);
 
   function go(id) {
-    router.push(`/videos/${id}`);
+    router.push(`/hentai/${id}`);
   }
 
   return (
     <div className={styles.stack}>
-      {visible.map((video) => (
+      {visible.map((anime) => (
         <div
-          key={video.id}
+          key={anime.id}
           className={styles.card}
           role="link"
           tabIndex={0}
-          onClick={() => go(video.id)}
+          onClick={() => go(anime.id)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              go(video.id);
+              go(anime.id);
             }
           }}
         >
           <div className={styles.thumb}>
-            <Preview src={video.src} thumb={video.thumb}>
-              <span className={styles.duration}>{video.duration}</span>
+            <Preview src={anime.src} thumb={anime.thumb}>
+              <span className={styles.duration}>{anime.duration}</span>
             </Preview>
           </div>
           <div className={styles.cardInfo}>
-            <h4 className={styles.cardTitle}>{video.title}</h4>
-            <span className={styles.channel}>{video.channel}</span>
-            <span className={styles.meta}>{video.views} • {video.time}</span>
+            <h4 className={styles.cardTitle}>{anime.title}</h4>
+            <span className={styles.channel}>{anime.channel}</span>
+            <span className={styles.meta}>{anime.views} • {anime.time}</span>
           </div>
         </div>
       ))}

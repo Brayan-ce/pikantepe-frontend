@@ -2,28 +2,30 @@
 
 import { useState } from 'react';
 import styles from './comunidad.module.css';
-import data from '@/data/data.json';
+import { getContenido } from '@/data/datos';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 import AdBanner from '@/_Pages/main/Home/componentes/anuncio/AdBanner.js';
 import AdNative from '@/_Pages/main/Home/componentes/anuncio/AdNative.js';
 
-const uploads = data.community;
 const CORE_TAGS = ['Amateur', 'HD', 'Latina'];
-const filters = ['Ver todo', ...Array.from(new Set(uploads.flatMap((v) => v.tags))), 'Otros'];
 
 export default function ComunidadClient() {
-  const [filter, setFilter] = useState('Ver todo');
+  const { locale, t } = useLanguage();
+  const uploads = getContenido(locale).community;
+  const filterKeys = ['all', ...Array.from(new Set(uploads.flatMap((v) => v.tags))), 'other'];
+  const [filter, setFilter] = useState('all');
   const list =
-    filter === 'Ver todo'
+    filter === 'all'
       ? uploads
-      : filter === 'Otros'
+      : filter === 'other'
         ? uploads.filter((v) => v.tags.some((t) => !CORE_TAGS.includes(t)))
         : uploads.filter((v) => v.tags.includes(filter));
 
   return (
     <main className={styles.main}>
       <div className={styles.head}>
-        <h1 className={styles.title}>Comunidad</h1>
-        <p className={styles.count}>{list.length} subidas</p>
+        <h1 className={styles.title}>{t('nav.comunidad')}</h1>
+        <p className={styles.count}>{list.length} {t('secciones.subidas')}</p>
       </div>
 
       <div className={styles.layout2col}>
@@ -31,7 +33,7 @@ export default function ComunidadClient() {
       <div className={styles.lockWrap}>
       <div className={styles.locked} aria-hidden="true">
       <div className={styles.chips}>
-        {filters.map((f) => (
+        {filterKeys.map((f) => (
           <button
             key={f}
             className={`${styles.chip} ${f === filter ? styles.chipActive : ''}`}
@@ -39,7 +41,7 @@ export default function ComunidadClient() {
             onClick={() => setFilter(f)}
             tabIndex={-1}
           >
-            {f}
+            {f === 'all' ? t('filtros.todas') : f === 'other' ? t('filtros.otros') : f}
           </button>
         ))}
       </div>
@@ -52,7 +54,7 @@ export default function ComunidadClient() {
       />
 
       {list.length === 0 ? (
-        <p className={styles.empty}>No hay subidas en esta categoría por ahora.</p>
+        <p className={styles.empty}>{t('secciones.sinSubidas')}</p>
       ) : (
         <div className={styles.grid}>
           {list.map((video) => (
@@ -87,8 +89,8 @@ export default function ComunidadClient() {
       <div className={styles.lockOverlay}>
         <div className={styles.lockCard}>
           <ion-icon name="construct-outline" className={styles.lockIcon} suppressHydrationWarning></ion-icon>
-          <p className={styles.lockTitle}>Sección en desarrollo y mantenimiento</p>
-          <p className={styles.lockText}>Estamos trabajando en esta sección. Estará disponible en unas horas o en 1 a 2 días.</p>
+          <p className={styles.lockTitle}>{t('mantenimiento.titulo')}</p>
+          <p className={styles.lockText}>{t('mantenimiento.texto')}</p>
         </div>
       </div>
       </div>

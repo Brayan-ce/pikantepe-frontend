@@ -3,16 +3,24 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './hentai.module.css';
-import data from '@/data/data.json';
+import { getContenido } from '@/data/datos';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 import AdBanner from '@/_Pages/main/Home/componentes/anuncio/AdBanner.js';
 import AdNative from '@/_Pages/main/Home/componentes/anuncio/AdNative.js';
 import Preview from '@/_Pages/main/Home/componentes/preview';
 
-const videos = [...data.hentai, ...data.videos];
 const PER_PAGE = 16;
-
-const DROP_ORDEN = ['Más recientes', 'Más vistos', 'Más largos', 'Más cortos'];
-const DROP_DURACION = ['Todas', 'Cortos (menos de 8 min)', 'Largos (8 min o más)'];
+const DROP_ORDEN = [
+  { value: 'recientes', label: 'filtros.recientes' },
+  { value: 'vistos', label: 'filtros.vistos' },
+  { value: 'largos', label: 'filtros.largos' },
+  { value: 'cortos', label: 'filtros.cortos' },
+];
+const DROP_DURACION = [
+  { value: 'todas', label: 'filtros.todas' },
+  { value: 'cortos', label: 'filtros.cortoLen' },
+  { value: 'largos', label: 'filtros.largoLen' },
+];
 
 function parseViews(text) {
   const m = String(text).match(/([\d,.]+)\s*K?/i);
@@ -42,6 +50,7 @@ function InFeedAd() {
 
 function Drop({ options, value, onChange, extraIcon }) {
   const [open, setOpen] = useState(false);
+  const { t } = useLanguage();
   return (
     <div className={styles.dropWrap}>
       <button
@@ -49,7 +58,7 @@ function Drop({ options, value, onChange, extraIcon }) {
         type="button"
         onClick={() => setOpen((o) => !o)}
       >
-        {value}
+        {t(options.find((o) => o.value === value)?.label || value)}
         <ion-icon name="chevron-down-outline" className={styles.dropChevron} suppressHydrationWarning></ion-icon>
         {extraIcon && (
           <ion-icon name="options-outline" className={styles.dropOptions} suppressHydrationWarning></ion-icon>
@@ -59,15 +68,15 @@ function Drop({ options, value, onChange, extraIcon }) {
         <div className={styles.dropMenu}>
           {options.map((op) => (
             <button
-              key={op}
-              className={`${styles.dropItem} ${op === value ? styles.dropItemActive : ''}`}
+              key={op.value}
+              className={`${styles.dropItem} ${op.value === value ? styles.dropItemActive : ''}`}
               type="button"
               onClick={() => {
-                onChange(op);
+                onChange(op.value);
                 setOpen(false);
               }}
             >
-              {op}
+              {t(op.label)}
             </button>
           ))}
         </div>
@@ -76,42 +85,15 @@ function Drop({ options, value, onChange, extraIcon }) {
   );
 }
 
-export default function HentaiClient() {
+export default function HentaiList() {
   const router = useRouter();
+  const { locale, t } = useLanguage();
+  const animes = getContenido(locale).hentai;
   const [page, setPage] = useState(1);
-  const [orden, setOrden] = useState(DROP_ORDEN[0]);
-  const [duracion, setDuracion] = useState(DROP_DURACION[0]);
+  const [orden, setOrden] = useState(DROP_ORDEN[0].value);
+  const [duracion, setDuracion] = useState(DROP_DURACION[0].value);
   const [query, setQuery] = useState('');
   const [isMobile, setIsMobile] = useState(false);
-  const [canLeft, setCanLeft] = useState(false);
-  const [canRight, setCanRight] = useState(true);
-  const rowRef = useRef(null);
-
-  // Querys propias (?q=, ?orden=, ?duracion=, ?page=).
-  useEffect(() => {
-    const p = new URLSearchParams(window.location.search);
-    const q = p.get('q');
-    if (q) setQuery(q);
-    const o = p.get('orden');
-    if (o && DROP_ORDEN.includes(o)) setOrden(o);
-    const d = p.get('duracion');
-    if (d && DROP_DURACION.includes(d)) setDuracion(d);
-    const pg = Number(p.get('page'));
-    if (Number.isInteger(pg) && pg >= 1) setPage(pg);
-  }, []);
-
-  useEffect(() => {
-    const t = setTimeout(() => {
-      const p = new URLSearchParams();
-      if (query.trim()) p.set('q', query.trim());
-      if (orden !== DROP_ORDEN[0]) p.set('orden', orden);
-      if (duracion !== DROP_DURACION[0]) p.set('duracion', duracion);
-      if (page > 1) p.set('page', String(page));
-      const qs = p.toString();
-      router.replace(qs ? `/hentai?${qs}` : '/hentai', { scroll: false });
-    }, 400);
-    return () => clearTimeout(t);
-  }, [query, orden, duracion, page, router]);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 768px)');
@@ -121,38 +103,20 @@ export default function HentaiClient() {
     return () => mq.removeEventListener('change', onChange);
   }, []);
 
-  useEffect(() => {
-    const el = rowRef.current;
-    if (!el) return;
-    function update() {
-      setCanLeft(el.scrollLeft > 8);
-      setCanRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 8);
-    }
-    update();
-    el.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    return () => {
-      el.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
-    };
-  }, []);
-
   const perRowGroup = isMobile ? 4 : 8;
   const isFiltering =
     query.trim() !== '' ||
-    orden !== DROP_ORDEN[0] ||
-    duracion !== DROP_DURACION[0];
+    orden !== DROP_ORDEN[0].value ||
+    duracion !== DROP_DURACION[0].value;
 
-  const top10 = [...videos].sort((a, b) => parseViews(b.views) - parseViews(a.views)).slice(0, 10);
-
-  let filtered = [...videos];
+  let filtered = [...animes];
   const q = query.trim().toLowerCase();
-  if (q) filtered = filtered.filter((v) => v.title.toLowerCase().includes(q) || v.channel.toLowerCase().includes(q));
-  if (orden === 'Más vistos') filtered.sort((a, b) => parseViews(b.views) - parseViews(a.views));
-  else if (orden === 'Más largos') filtered.sort((a, b) => parseDuration(b.duration) - parseDuration(a.duration));
-  else if (orden === 'Más cortos') filtered.sort((a, b) => parseDuration(a.duration) - parseDuration(b.duration));
-  if (duracion === 'Cortos (menos de 8 min)') filtered = filtered.filter((v) => parseDuration(v.duration) < 480);
-  if (duracion === 'Largos (8 min o más)') filtered = filtered.filter((v) => parseDuration(v.duration) >= 480);
+  if (q) filtered = filtered.filter((a) => a.title.toLowerCase().includes(q) || a.channel.toLowerCase().includes(q));
+  if (orden === 'vistos') filtered.sort((a, b) => parseViews(b.views) - parseViews(a.views));
+  else if (orden === 'largos') filtered.sort((a, b) => parseDuration(b.duration) - parseDuration(a.duration));
+  else if (orden === 'cortos') filtered.sort((a, b) => parseDuration(a.duration) - parseDuration(b.duration));
+  if (duracion === 'cortos') filtered = filtered.filter((a) => parseDuration(a.duration) < 480);
+  if (duracion === 'largos') filtered = filtered.filter((a) => parseDuration(a.duration) >= 480);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const safePage = Math.min(page, totalPages);
@@ -164,52 +128,46 @@ export default function HentaiClient() {
   }
 
   function go(id) {
-    router.push(`/videos/${id}`);
-  }
-
-  function scrollRow(dir = 1) {
-    const el = rowRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: 'smooth' });
+    router.push(`/hentai/${id}`);
   }
 
   function clearFilters() {
     setQuery('');
-    setOrden(DROP_ORDEN[0]);
-    setDuracion(DROP_DURACION[0]);
+    setOrden(DROP_ORDEN[0].value);
+    setDuracion(DROP_DURACION[0].value);
     setPage(1);
   }
 
-  function renderCard(video) {
+  function renderCard(anime) {
     return (
       <article
-        key={video.id}
+        key={anime.id}
         className={styles.card}
         role="link"
         tabIndex={0}
-        onClick={() => go(video.id)}
+        onClick={() => go(anime.id)}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            go(video.id);
+            go(anime.id);
           }
         }}
       >
-        <Preview src={video.src} thumb={video.thumb}>
+        <Preview src={anime.src} thumb={anime.thumb}>
           <span className={styles.playOverlay}>
             <ion-icon name="play" className={styles.playIcon} suppressHydrationWarning></ion-icon>
           </span>
-          <span className={styles.duration}>{video.duration}</span>
+          <span className={styles.duration}>{anime.duration}</span>
         </Preview>
         <div className={styles.info}>
-          <h3 className={styles.cardTitle}>{video.title}</h3>
+          <h3 className={styles.cardTitle}>{anime.title}</h3>
           <p className={styles.metaLine}>
-            <span className={styles.creator}>{video.channel}</span>
+            <span className={styles.creator}>{anime.channel}</span>
             <ion-icon name="checkmark-circle" className={styles.verified} suppressHydrationWarning></ion-icon>
             <span className={styles.dot}>•</span>
-            <span>{video.views}</span>
+            <span>{anime.views}</span>
             <span className={styles.dot}>•</span>
-            <span>{video.time}</span>
+            <span>{anime.time}</span>
           </p>
         </div>
       </article>
@@ -234,8 +192,8 @@ export default function HentaiClient() {
         <div className={styles.feed}>
           <div className={styles.headRow}>
             <div>
-              <h1 className={styles.title}>Hentai</h1>
-              <p className={styles.count}>{filtered.length} animes • Todo el hentai sin categorías</p>
+              <h1 className={styles.title}>{t('nav.hentai')}</h1>
+              <p className={styles.count}>{filtered.length} {t('secciones.animes')}</p>
             </div>
             <div className={styles.toolbar}>
               <Drop options={DROP_ORDEN} value={orden} onChange={(v) => { setOrden(v); setPage(1); }} />
@@ -249,72 +207,33 @@ export default function HentaiClient() {
               <input
                 className={styles.searchInput}
                 type="text"
-                placeholder="Buscar anime..."
+                placeholder={t('secciones.buscarAnime')}
                 value={query}
                 onChange={(e) => { setQuery(e.target.value); setPage(1); }}
               />
               {query && (
-                <button className={styles.searchClear} type="button" aria-label="Limpiar búsqueda" onClick={() => setQuery('')}>
+                <button className={styles.searchClear} type="button" aria-label={t('filtros.limpiar')} onClick={() => setQuery('')}>
                   <ion-icon name="close-outline" suppressHydrationWarning></ion-icon>
                 </button>
               )}
             </div>
           </div>
 
-          {!isFiltering && (
-            <div className={styles.topSection}>
-              <h2 className={styles.sectionTitle}>Los 10 más vistos</h2>
-              <div className={styles.topViewport}>
-                <div className={styles.row} ref={rowRef}>
-                  {top10.map(renderCard)}
-                </div>
-                {canLeft && <div className={`${styles.edge} ${styles.edgeLeft}`} aria-hidden="true" />}
-                {canRight && <div className={`${styles.edge} ${styles.edgeRight}`} aria-hidden="true" />}
-                {canLeft && (
-                  <button
-                    className={`${styles.edgeBtn} ${styles.edgeBtnLeft}`}
-                    type="button"
-                    aria-label="Anterior"
-                    onClick={() => scrollRow(-1)}
-                  >
-                    <ion-icon name="chevron-back-outline" className={styles.navIcon} suppressHydrationWarning></ion-icon>
-                  </button>
-                )}
-                {canRight && (
-                  <button
-                    className={`${styles.edgeBtn} ${styles.edgeBtnRight}`}
-                    type="button"
-                    aria-label="Siguiente"
-                    onClick={() => scrollRow(1)}
-                  >
-                    <ion-icon name="chevron-forward-outline" className={styles.navIcon} suppressHydrationWarning></ion-icon>
-                  </button>
-                )}
-              </div>
-              <AdBanner
-                adKey="e483940fff110a871ea3ba9b07dd3259"
-                width={728}
-                height={90}
-                src="https://www.highrevenueformat.com/e483940fff110a871ea3ba9b07dd3259/invoke.js"
-              />
-            </div>
-          )}
-
           <div className={styles.allHead}>
-            <h2 className={styles.sectionTitle}>{isFiltering ? 'Resultados' : 'Todos los animes'}</h2>
+            <h2 className={styles.sectionTitle}>{isFiltering ? t('filtros.resultados') : t('secciones.todosAnimes')}</h2>
             <div className={styles.allHeadRight}>
               {isFiltering && (
                 <button className={styles.clearFiltersBtn} type="button" onClick={clearFilters}>
                   <ion-icon name="close-circle-outline" suppressHydrationWarning></ion-icon>
-                  Borrar filtros
+                  {t('filtros.borrar')}
                 </button>
               )}
-              <span className={styles.count}>{filtered.length} animes</span>
+              <span className={styles.count}>{filtered.length} {t('secciones.animes')}</span>
             </div>
           </div>
 
           {filtered.length === 0 ? (
-            <p className={styles.empty}>No hay animes con esos filtros por ahora.</p>
+            <p className={styles.empty}>{t('secciones.sinResultados')}</p>
           ) : (
             <div className={styles.grid}>
               {groups}
@@ -334,7 +253,7 @@ export default function HentaiClient() {
               type="button"
               disabled={safePage <= 1}
               onClick={() => goPage(safePage - 1)}
-              aria-label="Página anterior"
+              aria-label={t('paginacion.anterior')}
             >
               <ion-icon name="chevron-back-outline" suppressHydrationWarning></ion-icon>
             </button>
@@ -353,7 +272,7 @@ export default function HentaiClient() {
               type="button"
               disabled={safePage >= totalPages}
               onClick={() => goPage(safePage + 1)}
-              aria-label="Página siguiente"
+              aria-label={t('paginacion.siguiente')}
             >
               <ion-icon name="chevron-forward-outline" suppressHydrationWarning></ion-icon>
             </button>

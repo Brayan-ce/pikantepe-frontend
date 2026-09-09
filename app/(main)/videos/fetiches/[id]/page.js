@@ -2,9 +2,15 @@ import Header from '@/_Pages/main/layouts/Header/Header';
 import Sidebar from '@/_Pages/main/layouts/headerLateralIzquierdo';
 import VideosClient from '@/_Pages/main/Videos/videos.js';
 import styles from '@/app/(main)/page.module.css';
-import data from '@/data/data.json';
+import { getContenido } from '@/data/datos';
+import { cookies } from 'next/headers';
 
-function findFetiche(id) {
+async function getLocale() {
+  const c = (await cookies()).get('locale')?.value;
+  return c === 'en' ? 'en' : 'es';
+}
+
+function findFetiche(data, id) {
   return (data.fetiches || []).find((f) => String(f.id) === String(id));
 }
 
@@ -23,7 +29,7 @@ function toInfo(entry) {
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
-  const entry = findFetiche(id);
+  const entry = findFetiche(getContenido(await getLocale()), id);
   if (!entry) return { title: 'Video no encontrado' };
   const description = `${entry.viewsFull || ''} • ${entry.channel || ''}`.trim();
   return {
@@ -37,7 +43,7 @@ export async function generateMetadata({ params }) {
 
 export default async function FeticheVideoPage({ params }) {
   const { id } = await params;
-  const entry = findFetiche(id);
+  const entry = findFetiche(getContenido(await getLocale()), id);
   const num = String(id ?? '1').padStart(2, '0');
   const src = entry?.src || `/videos/fetiches/fetiche_${num}.mp4`;
 

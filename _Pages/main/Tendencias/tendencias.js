@@ -3,7 +3,8 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './tendencias.module.css';
-import data from '@/data/data.json';
+import { getContenido } from '@/data/datos';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 import AdBanner from '@/_Pages/main/Home/componentes/anuncio/AdBanner.js';
 import AdNative from '@/_Pages/main/Home/componentes/anuncio/AdNative.js';
 import Preview from '@/_Pages/main/Home/componentes/preview';
@@ -30,6 +31,8 @@ function InFeedAd() {
 
 export default function TendenciasClient() {
   const router = useRouter();
+  const { locale, t } = useLanguage();
+  const data = getContenido(locale);
   const [isMobile, setIsMobile] = useState(false);
   const [page, setPage] = useState(1);
 
@@ -113,8 +116,8 @@ export default function TendenciasClient() {
     <main className={styles.main}>
       <div className={styles.headRow}>
         <div>
-          <h1 className={styles.title}>Tendencias</h1>
-          <p className={styles.count}>{list.length} videos • Lo más visto de la plataforma</p>
+          <h1 className={styles.title}>{t('nav.tendencias')}</h1>
+          <p className={styles.count}>{list.length} {t('secciones.videos')} • {t('secciones.tendenciasDesc') || 'Lo más visto de la plataforma'}</p>
         </div>
       </div>
 
@@ -130,7 +133,7 @@ export default function TendenciasClient() {
               type="button"
               disabled={page <= 1}
               onClick={() => goPage(page - 1)}
-              aria-label="Página anterior"
+              aria-label={t('paginacion.anterior')}
             >
               <ion-icon name="chevron-back-outline" suppressHydrationWarning></ion-icon>
             </button>
@@ -149,7 +152,7 @@ export default function TendenciasClient() {
               type="button"
               disabled={page >= totalPages}
               onClick={() => goPage(page + 1)}
-              aria-label="Página siguiente"
+              aria-label={t('paginacion.siguiente')}
             >
               <ion-icon name="chevron-forward-outline" suppressHydrationWarning></ion-icon>
             </button>

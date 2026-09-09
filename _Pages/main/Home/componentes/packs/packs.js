@@ -2,12 +2,13 @@
 
 import { useRef, useState, useEffect } from 'react';
 import styles from './packs.module.css';
-import data from '@/data/data.json';
-
-const packs = data.packs;
+import { getContenido } from '@/data/datos';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 
 export default function Packs() {
   const trackRef = useRef(null);
+  const { locale, t } = useLanguage();
+  const packs = getContenido(locale).packs;
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(true);
 
@@ -36,10 +37,10 @@ export default function Packs() {
   return (
     <section className={styles.section}>
       <div className={styles.header}>
-        <h2 className={styles.title}>Packs populares</h2>
+        <h2 className={styles.title}>{t('secciones.packsPopulares')}</h2>
         <div className={styles.actions}>
           <a href="/packs" className={styles.verMas}>
-            Ver más
+            {t('secciones.verMas')}
             <ion-icon name="arrow-forward-outline" className={styles.verMasIcon} suppressHydrationWarning></ion-icon>
           </a>
         </div>
@@ -57,7 +58,7 @@ export default function Packs() {
               </div>
               <div className={styles.info}>
                 <h3 className={styles.cardTitle}>{pack.title}</h3>
-                <p className={styles.meta}>{pack.fotos} fotos • {pack.videos} videos</p>
+                <p className={styles.meta}>{pack.fotos} {t('packs.fotos')} • {pack.videos} {t('packs.videos')}</p>
                 <span className={styles.views}>{pack.views}</span>
               </div>
             </article>

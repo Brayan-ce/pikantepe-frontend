@@ -2,15 +2,16 @@
 
 import { useRef, useState, useEffect } from 'react';
 import styles from './comunidad.module.css';
-import data from '@/data/data.json';
+import { getContenido } from '@/data/datos';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 import { useSidebar } from '@/app/sidebarContext.js';
 import Preview from '@/_Pages/main/Home/componentes/preview';
-
-const uploads = data.community;
 
 export default function Comunidad() {
   const trackRef = useRef(null);
   const { openMaint } = useSidebar();
+  const { locale, t } = useLanguage();
+  const uploads = getContenido(locale).community;
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(true);
 
@@ -39,10 +40,10 @@ export default function Comunidad() {
   return (
     <section className={styles.section}>
       <div className={styles.header}>
-        <h2 className={styles.title}>Subidas de la comunidad</h2>
+        <h2 className={styles.title}>{t('secciones.comunidad')}</h2>
         <div className={styles.actions}>
           <a href="/comunidad" className={styles.verMas}>
-            Ver más
+            {t('secciones.verMas')}
             <ion-icon name="arrow-forward-outline" className={styles.verMasIcon} suppressHydrationWarning></ion-icon>
           </a>
         </div>

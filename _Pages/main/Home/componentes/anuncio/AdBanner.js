@@ -1,8 +1,10 @@
 'use client';
 
 import styles from './anuncio.module.css';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 
 export default function AdBanner({ adKey, width = 300, height = 250, src, marco = false }) {
+  const { t } = useLanguage();
   const doc = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0;background:transparent}</style></head><body><script>atOptions={'key':'${adKey}','format':'iframe','height':${height},'width':${width},'params':{}};<\/script><script src="${src}"><\/script></body></html>`;
 
   const frame = (
@@ -20,7 +22,7 @@ export default function AdBanner({ adKey, width = 300, height = 250, src, marco 
 
   return (
     <div className={styles.wrapper}>
-      <span className={styles.label}>ANUNCIO</span>
+      <span className={styles.label}>{t('anuncio.label')}</span>
       {marco ? <div className={styles.marcoBanner}>{frame}</div> : frame}
     </div>
   );

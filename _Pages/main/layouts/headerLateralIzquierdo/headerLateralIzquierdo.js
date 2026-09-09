@@ -3,23 +3,24 @@
 import styles from './headerLateralIzquierdo.module.css';
 import { useSidebar } from '@/app/sidebarContext.js';
 import { useRouter, usePathname } from 'next/navigation';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 
 const sectionPrincipal = [
-  { icon: 'home-outline', label: 'Inicio', href: '/' },
-  { icon: 'play-circle-outline', label: 'Reels', href: '/reels', variant: 'reels', tag: 'SUGERIDO' },
-  { icon: 'radio-outline', label: 'En Vivo', href: '/en-vivo', variant: 'live', tag: 'EN VIVO' },
-  { icon: 'film-outline', label: 'Todos los videos', href: '/videos' },
-  { icon: 'sparkles-outline', label: 'Hentai', href: '/hentai' },
-  { icon: 'trending-up-outline', label: 'Tendencias', href: '/tendencias' },
-  { icon: 'flame-outline', label: 'Fetiches', href: '/fetiches' },
-  { icon: 'cube-outline', label: 'Packs', href: '/packs' },
-  { icon: 'people-outline', label: 'Comunidad', href: '/comunidad' },
+  { icon: 'home-outline', label: 'nav.inicio', href: '/' },
+  { icon: 'play-circle-outline', label: 'nav.reels', href: '/reels', variant: 'reels', tagKey: 'nav.sugerido' },
+  { icon: 'radio-outline', label: 'nav.enVivo', href: '/en-vivo', variant: 'live', tagKey: 'nav.enVivoTag' },
+  { icon: 'film-outline', label: 'nav.todosVideos', href: '/videos' },
+  { icon: 'sparkles-outline', label: 'nav.hentai', href: '/hentai' },
+  { icon: 'trending-up-outline', label: 'nav.tendencias', href: '/tendencias' },
+  { icon: 'flame-outline', label: 'nav.fetiches', href: '/fetiches' },
+  { icon: 'cube-outline', label: 'nav.packs', href: '/packs' },
+  { icon: 'people-outline', label: 'nav.comunidad', href: '/comunidad' },
 ];
 
 const tusGuardados = [
-  { icon: 'heart-outline', label: 'Favoritos', href: '/favoritos' },
-  { icon: 'time-outline', label: 'Historial', href: '/historial' },
-  { icon: 'thumbs-up-outline', label: 'Me gusta', href: '/me-gusta' },
+  { icon: 'heart-outline', label: 'nav.favoritos', href: '/favoritos' },
+  { icon: 'time-outline', label: 'nav.historial', href: '/historial' },
+  { icon: 'thumbs-up-outline', label: 'nav.meGusta', href: '/me-gusta' },
 ];
 
 const categorias = [
@@ -33,6 +34,7 @@ const ENABLED_ROUTES = ['/', '/videos', '/tendencias', '/fetiches', '/packs', '/
 
 export default function HeaderLateralIzquierdo() {
   const { isOpen, close, openMaint } = useSidebar();
+  const { t } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -77,14 +79,14 @@ export default function HeaderLateralIzquierdo() {
         }}
       >
         <ion-icon name={item.icon} className={styles.navIcon} suppressHydrationWarning></ion-icon>
-        <span>{item.label}</span>
-        {item.tag && (
+        <span>{item.label.startsWith('nav.') ? t(item.label) : item.label}</span>
+        {item.tagKey && (
           <span className={`${styles.promoTag} ${item.variant === 'live' ? styles.promoTagLive : ''}`}>
             {item.variant === 'live' && <span className={styles.liveDot} />}
             {item.variant === 'reels' && (
               <ion-icon name="flame-outline" className={styles.promoTagIcon} suppressHydrationWarning></ion-icon>
             )}
-            {item.tag}
+            {t(item.tagKey)}
           </span>
         )}
       </div>
@@ -95,17 +97,17 @@ export default function HeaderLateralIzquierdo() {
     <>
       <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
         <nav className={styles.nav}>
-          <span className={styles.sectionLabel}>Sección Principal</span>
+          <span className={styles.sectionLabel}>{t('nav.seccionPrincipal')}</span>
           {sectionPrincipal.map(renderItem)}
         </nav>
 
         <nav className={styles.nav}>
-          <span className={styles.sectionLabel}>Tus Guardados</span>
+          <span className={styles.sectionLabel}>{t('nav.tusGuardados')}</span>
           {tusGuardados.map(renderItem)}
         </nav>
 
         <nav className={styles.nav}>
-          <span className={styles.sectionLabel}>Categorías</span>
+          <span className={styles.sectionLabel}>{t('nav.categorias')}</span>
           {categorias.map(renderItem)}
           <button
             className={styles.moreBtn}
@@ -113,7 +115,7 @@ export default function HeaderLateralIzquierdo() {
             onClick={handleVerTodas}
           >
             <ion-icon name="grid-outline" className={styles.moreIcon} suppressHydrationWarning></ion-icon>
-            <span>Ver todas las categorías</span>
+            <span>{t('nav.verTodas')}</span>
           </button>
         </nav>
       </aside>

@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import styles from './descarga.module.css';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 
 export default function DescargaModal({ open, onClose, paso1, paso2, directo, titulo = 'Descargar' }) {
+  const { t } = useLanguage();
   const [step, setStep] = useState(1);
 
   useEffect(() => {
@@ -32,7 +34,7 @@ export default function DescargaModal({ open, onClose, paso1, paso2, directo, ti
       >
         <div className={styles.dlHead}>
           <h3 className={styles.dlTitle}>{titulo}</h3>
-          <button className={styles.dlClose} type="button" aria-label="Cerrar" onClick={onClose}>
+          <button className={styles.dlClose} type="button" aria-label="Close" onClick={onClose}>
             <ion-icon name="close-outline" suppressHydrationWarning></ion-icon>
           </button>
         </div>
@@ -40,11 +42,11 @@ export default function DescargaModal({ open, onClose, paso1, paso2, directo, ti
         <div className={`${styles.dlStep} ${step > 1 ? styles.dlStepDone : ''}`}>
           <span className={styles.dlNum}>{step > 1 ? <ion-icon name="checkmark-sharp" suppressHydrationWarning></ion-icon> : '1'}</span>
           <div className={styles.dlStepBody}>
-            <p className={styles.dlStepTitle}>Paso 1: abre el enlace</p>
-            <p className={styles.dlStepText}>Da click para desbloquear el siguiente paso.</p>
+            <p className={styles.dlStepTitle}>{t('descarga.paso1t')}</p>
+            <p className={styles.dlStepText}>{t('descarga.paso1d')}</p>
             <p className={styles.dlHint}>
               <ion-icon name="information-circle-outline" suppressHydrationWarning></ion-icon>
-              La pestaña que se abra ciérrala nomás, no importa — solo es para liberar el siguiente paso.
+              {t('descarga.hint1')}
             </p>
             <a
               className={styles.dlStepBtn}
@@ -53,7 +55,7 @@ export default function DescargaModal({ open, onClose, paso1, paso2, directo, ti
               rel="sponsored nofollow noopener"
               onClick={() => setStep((s) => Math.max(s, 2))}
             >
-              Abrir enlace 1
+              {t('descarga.abrir1')}
               <ion-icon name="open-outline" className={styles.dlCheck} suppressHydrationWarning></ion-icon>
             </a>
           </div>
@@ -62,11 +64,11 @@ export default function DescargaModal({ open, onClose, paso1, paso2, directo, ti
         <div className={`${styles.dlStep} ${step < 2 ? styles.dlStepLocked : ''} ${step > 2 ? styles.dlStepDone : ''}`}>
           <span className={styles.dlNum}>{step > 2 ? <ion-icon name="checkmark-sharp" suppressHydrationWarning></ion-icon> : '2'}</span>
           <div className={styles.dlStepBody}>
-            <p className={styles.dlStepTitle}>Paso 2: confirma el segundo enlace</p>
-            <p className={styles.dlStepText}>Con esto se libera la descarga directa.</p>
+            <p className={styles.dlStepTitle}>{t('descarga.paso2t')}</p>
+            <p className={styles.dlStepText}>{t('descarga.paso2d')}</p>
             <p className={styles.dlHint}>
               <ion-icon name="information-circle-outline" suppressHydrationWarning></ion-icon>
-              Igual que antes: cierra la pestaña que se abra y sigue nomás.
+              {t('descarga.hint2')}
             </p>
             <a
               className={styles.dlStepBtn}
@@ -83,7 +85,7 @@ export default function DescargaModal({ open, onClose, paso1, paso2, directo, ti
               }}
               style={step < 2 ? { pointerEvents: 'none', opacity: 0.5 } : undefined}
             >
-              Abrir enlace 2
+              {t('descarga.abrir2')}
               <ion-icon name="open-outline" className={styles.dlCheck} suppressHydrationWarning></ion-icon>
             </a>
           </div>
@@ -92,8 +94,8 @@ export default function DescargaModal({ open, onClose, paso1, paso2, directo, ti
         <div className={`${styles.dlStep} ${step < 3 ? styles.dlStepLocked : ''} ${styles.dlStepDone}`}>
           <span className={styles.dlNum}>{step >= 3 ? <ion-icon name="checkmark-sharp" suppressHydrationWarning></ion-icon> : '3'}</span>
           <div className={styles.dlStepBody}>
-            <p className={styles.dlStepTitle}>Paso 3: descarga directa</p>
-            <p className={styles.dlStepText}>Tu archivo está listo, dale sin miedo.</p>
+            <p className={styles.dlStepTitle}>{t('descarga.paso3t')}</p>
+            <p className={styles.dlStepText}>{t('descarga.paso3d')}</p>
             <a
               className={styles.dlStepBtn}
               href={step >= 3 ? directo : undefined}
@@ -106,7 +108,7 @@ export default function DescargaModal({ open, onClose, paso1, paso2, directo, ti
               style={step < 3 ? { pointerEvents: 'none', opacity: 0.5 } : undefined}
             >
               <ion-icon name="download-outline" className={styles.dlCheck} suppressHydrationWarning></ion-icon>
-              Descargar archivo
+              {t('descarga.descargarArchivo')}
             </a>
           </div>
         </div>

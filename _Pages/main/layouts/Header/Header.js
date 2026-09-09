@@ -5,12 +5,20 @@ import { useRouter } from 'next/navigation';
 import styles from './header.module.css';
 import { useTheme } from '@/_Extras/CambiodeColor/ThemeProvider.js';
 import { useSidebar } from '@/app/sidebarContext.js';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 
-const filters = ['Más recientes', 'Más vistos', 'Más likes', 'HD', '4K'];
+const filters = [
+  { value: 'recientes', label: 'filtros.recientes' },
+  { value: 'vistos', label: 'filtros.vistos' },
+  { value: 'likes', label: 'filtros.likes' },
+  { value: 'hd', label: 'HD' },
+  { value: '4k', label: '4K' },
+];
 
 export default function Header() {
   const { isDark, toggleTheme } = useTheme();
   const { isOpen, toggle: toggleSidebar, openMaint } = useSidebar();
+  const { t } = useLanguage();
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
   const searchRef = useRef(null);
@@ -43,7 +51,7 @@ export default function Header() {
         <button
           className={styles.hamburger}
           onClick={toggleSidebar}
-          aria-label={isOpen ? 'Cerrar menú' : 'Abrir menú'}
+          aria-label={isOpen ? t('header.cerrarMenu') : t('header.abrirMenu')}
           type="button"
         >
           <ion-icon name={isOpen ? 'close-outline' : 'menu-outline'} suppressHydrationWarning></ion-icon>
@@ -55,7 +63,7 @@ export default function Header() {
         <div className={styles.searchWrapper}>
           <input
             type="text"
-            placeholder="Buscar videos, categorías, modelos, packs..."
+            placeholder={t('header.buscar')}
             className={styles.searchInput}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -87,7 +95,7 @@ export default function Header() {
           <button
             className={styles.themeButton}
             onClick={toggleTheme}
-            aria-label="Toggle theme"
+            aria-label={t('header.tema')}
             type="button"
           >
             <ion-icon name={isDark ? 'sunny-outline' : 'moon-outline'} className={styles.themeIcon} suppressHydrationWarning></ion-icon>
@@ -97,7 +105,7 @@ export default function Header() {
 
           <div className={styles.profileMenu} onClick={handleProfileClick}>
             <ion-icon name="person-circle-outline" className={styles.profileIcon} suppressHydrationWarning></ion-icon>
-            <span className={styles.profileLabel}>Mi Perfil</span>
+            <span className={styles.profileLabel}>{t('header.miPerfil')}</span>
           </div>
         </div>
       </header>
@@ -109,7 +117,7 @@ export default function Header() {
               <ion-icon name="search-outline" className={styles.searchDropdownIcon} suppressHydrationWarning></ion-icon>
               <input
                 type="text"
-                placeholder="Buscar..."
+                placeholder={t('header.buscarCorto')}
                 className={styles.searchDropdownInputField}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -117,12 +125,12 @@ export default function Header() {
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               />
               <button className={styles.searchDropdownBtn} onClick={handleSearch} type="button">
-                Buscar
+                {t('header.buscarBtn')}
               </button>
             </div>
             <div className={styles.searchFilters}>
               {filters.map((f) => (
-                <button key={f} className={styles.filterChip} type="button">{f}</button>
+                <button key={f.value} className={styles.filterChip} type="button">{t(f.label)}</button>
               ))}
             </div>
           </div>

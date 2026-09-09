@@ -3,21 +3,22 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './recomendados.module.css';
-import data from '@/data/data.json';
+import { getContenido } from '@/data/datos';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 import Preview from '@/_Pages/main/Home/componentes/preview';
 
 const BATCH = 5;
 const INITIAL = 6;
 
-const items = data.videos;
-
-// Meta del video actual para calcular relación (mismo canal + tags compartidos)
-const CURRENT_META = Object.fromEntries(
-  data.videos.map((v) => [v.id, { channel: v.channel, tags: v.tags }])
-);
-
 export default function Recomendados({ currentId }) {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const items = getContenido(locale).videos;
+
+  // Meta del video actual para calcular relación (mismo canal + tags compartidos)
+  const CURRENT_META = Object.fromEntries(
+    items.map((v) => [v.id, { channel: v.channel, tags: v.tags }])
+  );
   const [count, setCount] = useState(INITIAL);
   const sentinelRef = useRef(null);
 
@@ -98,9 +99,11 @@ export default function Recomendados({ currentId }) {
                 }
               }}
             >
-              <Preview src={video.src} thumb={video.thumb}>
-                <span className={styles.duration}>{video.duration}</span>
-              </Preview>
+              <div className={styles.thumb}>
+                <Preview src={video.src} thumb={video.thumb}>
+                  <span className={styles.duration}>{video.duration}</span>
+                </Preview>
+              </div>
               <div className={styles.cardInfo}>
                 <h4 className={styles.cardTitle}>{video.title}</h4>
                 <span className={styles.channel}>{video.channel}</span>

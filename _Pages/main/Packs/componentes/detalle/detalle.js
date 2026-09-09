@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './detalle.module.css';
-import data from '@/data/data.json';
+import { getContenido } from '@/data/datos';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 import AdBanner from '@/_Pages/main/Home/componentes/anuncio/AdBanner.js';
 import Comentarios from '@/_Pages/main/Videos/componentes/comentarios';
 import DescargaModal from '@/_Pages/main/Packs/componentes/descarga';
@@ -18,6 +19,8 @@ function parseNum(text) {
 
 export default function PackDetalle({ packId }) {
   const router = useRouter();
+  const { locale, t } = useLanguage();
+  const data = getContenido(locale);
   const [dlOpen, setDlOpen] = useState(false);
 
   const pack = data.packs.find((p) => String(p.id) === String(packId)) || {
@@ -26,8 +29,8 @@ export default function PackDetalle({ packId }) {
     uploader: 'Canal Picante',
     fotos: 0,
     videos: 0,
-    views: '0 vistas',
-    descargas: '0 descargas',
+    views: `0 ${t('packs.vistas')}`,
+    descargas: `0 ${t('packs.descargas')}`,
   };
 
   const relacionados = data.packs
@@ -46,7 +49,7 @@ export default function PackDetalle({ packId }) {
         <div className={styles.photo}>
           <span className={styles.packBadge}>PACK</span>
           <ion-icon name="image-outline" className={styles.photoIcon} suppressHydrationWarning></ion-icon>
-          <span className={styles.photoLabel}>IMAGEN DE PACK</span>
+          <span className={styles.photoLabel}>PACK IMAGE</span>
         </div>
 
         <DescargaModal
@@ -55,7 +58,7 @@ export default function PackDetalle({ packId }) {
           paso1={SMARTLINK_URL}
           paso2={SMARTLINK_URL}
           directo={pack.download || '#'}
-          titulo="Descargar pack"
+          titulo={t('descarga.packTitulo')}
         />
 
         <div className={styles.info}>
@@ -66,18 +69,18 @@ export default function PackDetalle({ packId }) {
             </div>
             <button className={styles.downloadBtn} type="button" onClick={() => setDlOpen(true)}>
               <ion-icon name="download-outline" className={styles.downloadIcon} suppressHydrationWarning></ion-icon>
-              DESCARGAR
+              {t('descarga.titulo')}
             </button>
           </div>
           <p className={styles.uploader}>{pack.uploader}</p>
           <div className={styles.stats}>
             <span className={styles.stat}>
               <ion-icon name="image-outline" suppressHydrationWarning></ion-icon>
-              {pack.fotos} fotos
+              {pack.fotos} {t('packs.fotos')}
             </span>
             <span className={styles.stat}>
               <ion-icon name="videocam-outline" suppressHydrationWarning></ion-icon>
-              {pack.videos} videos
+              {pack.videos} {t('packs.videos')}
             </span>
             <span className={styles.stat}>
               <ion-icon name="eye-outline" suppressHydrationWarning></ion-icon>
@@ -89,8 +92,8 @@ export default function PackDetalle({ packId }) {
             </span>
           </div>
           <p className={styles.desc}>
-            Pack con {pack.fotos} fotos y {pack.videos} videos de {pack.uploader}.
-            Contenido exclusivo listo para descargar.
+            Pack with {pack.fotos} {t('packs.fotos')} and {pack.videos} {t('packs.videos')} by {pack.uploader}.
+            Exclusive content ready to download.
           </p>
         </div>
 
@@ -105,7 +108,7 @@ export default function PackDetalle({ packId }) {
       </div>
 
       <div className={styles.rightCol}>
-        <h3 className={styles.sideTitle}>Packs relacionados</h3>
+        <h3 className={styles.sideTitle}>Related packs</h3>
         <div className={styles.stack}>
           {relacionados.map((r) => (
             <div
@@ -127,7 +130,7 @@ export default function PackDetalle({ packId }) {
               <div className={styles.cardInfo}>
                 <h4 className={styles.cardTitle}>{r.title}</h4>
                 <span className={styles.uploaderSm}>{r.uploader}</span>
-                <span className={styles.meta}>{r.fotos} fotos • {r.videos} videos</span>
+                <span className={styles.meta}>{r.fotos} {t('packs.fotos')} • {r.videos} {t('packs.videos')}</span>
                 <span className={styles.meta}>{r.descargas}</span>
               </div>
             </div>

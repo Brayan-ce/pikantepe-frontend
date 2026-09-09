@@ -2,15 +2,16 @@
 
 import { useRef, useState, useEffect } from 'react';
 import styles from './lives.module.css';
-import data from '@/data/data.json';
+import { getContenido } from '@/data/datos';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 import { useSidebar } from '@/app/sidebarContext.js';
 import Preview from '@/_Pages/main/Home/componentes/preview';
-
-const lives = data.lives;
 
 export default function Lives() {
   const trackRef = useRef(null);
   const { openMaint } = useSidebar();
+  const { locale, t } = useLanguage();
+  const lives = getContenido(locale).lives;
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(true);
 
@@ -40,7 +41,7 @@ export default function Lives() {
     <section className={styles.section}>
       <div className={styles.header}>
         <div className={styles.titleWrap}>
-          <h2 className={styles.title}>Lives en directo</h2>
+          <h2 className={styles.title}>{t('secciones.livesDirecto')}</h2>
           <span className={styles.livePulse}>
             <ion-icon name="radio-outline" className={styles.livePulseIcon} suppressHydrationWarning></ion-icon>
             LIVE
@@ -48,7 +49,7 @@ export default function Lives() {
         </div>
         <div className={styles.actions}>
           <a href="/en-vivo" className={styles.verMas}>
-            Ver más
+            {t('secciones.verMas')}
             <ion-icon name="arrow-forward-outline" className={styles.verMasIcon} suppressHydrationWarning></ion-icon>
           </a>
         </div>
@@ -73,7 +74,7 @@ export default function Lives() {
               <Preview thumb={live.thumb}>
                 <span className={styles.liveBadge}>
                   <ion-icon name="radio-outline" className={styles.liveBadgeIcon} suppressHydrationWarning></ion-icon>
-                  EN VIVO
+                  LIVE
                 </span>
               </Preview>
               <div className={styles.info}>

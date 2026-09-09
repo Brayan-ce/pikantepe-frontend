@@ -3,11 +3,11 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './packs.module.css';
-import data from '@/data/data.json';
+import { getContenido } from '@/data/datos';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 import AdBanner from '@/_Pages/main/Home/componentes/anuncio/AdBanner.js';
 import AdNative from '@/_Pages/main/Home/componentes/anuncio/AdNative.js';
 
-const packs = data.packs;
 const PER_PAGE = 16;
 
 function parseNum(text) {
@@ -60,6 +60,8 @@ function Drop({ options, value, onChange, extraIcon }) {
 
 export default function PacksClient() {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const packs = getContenido(locale).packs;
   const [descargas, setDescargas] = useState(DROP_DESCARGAS[0]);
   const [buscados, setBuscados] = useState(DROP_BUSCADOS[0]);
   const [novedad, setNovedad] = useState(DROP_NUEVOS[0]);

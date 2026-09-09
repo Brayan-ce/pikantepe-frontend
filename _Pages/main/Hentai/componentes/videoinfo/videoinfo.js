@@ -8,19 +8,19 @@ import DescargaModal from '@/_Pages/main/Packs/componentes/descarga';
 import CompartirModal from '@/_Pages/main/Videos/componentes/compartir';
 import { SMARTLINK_URL } from '@/_Pages/main/Home/componentes/anuncio/ads.js';
 
-export default function VideoInfo({ videoId, info: infoProp = null, src = '/videos/1.mov' }) {
+export default function HentaiInfo({ hentaiId, info: infoProp = null, src = '/videos/1.mov' }) {
   const { locale, t } = useLanguage();
   const INFO = Object.fromEntries(
-    getContenido(locale).videos.map((v) => [
-      v.id,
+    getContenido(locale).hentai.map((h) => [
+      h.id,
       {
-        title: v.title,
-        views: v.viewsFull,
-        date: v.date,
-        channel: v.channel,
-        since: v.since,
-        tags: v.tags,
-        desc: v.desc,
+        title: h.title,
+        views: h.viewsFull,
+        date: h.date,
+        channel: h.channel,
+        since: h.since,
+        tags: h.tags,
+        desc: h.desc,
       },
     ])
   );
@@ -31,11 +31,11 @@ export default function VideoInfo({ videoId, info: infoProp = null, src = '/vide
   const [expanded, setExpanded] = useState(false);
   const [dlOpen, setDlOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
-  const seedNum = Number(String(videoId).replace(/\D/g, '')) || 7;
+  const seedNum = Number(String(hentaiId).replace(/\D/g, '')) || 7;
   const [likeCount, setLikeCount] = useState(() => 1850 + (seedNum * 731) % 3200);
   const [dislikeCount, setDislikeCount] = useState(() => 28 + (seedNum * 137) % 180);
 
-  const info = INFO[videoId] || infoProp || { title: `Video #${videoId ?? ''}`, views: '0 views', date: 'recent', channel: 'Picante Channel', since: '2024', tags: ['new'], desc: 'Video description coming soon.' };
+  const info = INFO[hentaiId] || infoProp || { title: `Anime #${hentaiId ?? ''}`, views: '0 views', date: 'recent', channel: 'Hentai Channel', since: '2024', tags: ['new'], desc: 'Anime description coming soon.' };
 
   function formatCount(n) {
     if (n >= 1000000) return (n / 1000000).toFixed(n >= 10000000 ? 0 : 1).replace('.0', '') + 'M';

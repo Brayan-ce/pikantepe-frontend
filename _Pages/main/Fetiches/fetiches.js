@@ -3,12 +3,12 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './fetiches.module.css';
-import data from '@/data/data.json';
+import { getContenido } from '@/data/datos';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 import AdBanner from '@/_Pages/main/Home/componentes/anuncio/AdBanner.js';
 import AdNative from '@/_Pages/main/Home/componentes/anuncio/AdNative.js';
 import Preview from '@/_Pages/main/Home/componentes/preview';
 
-const videos = data.videos;
 const PER_PAGE = 16;
 const TABS = ['Fetiches', 'Látex', 'Pies', 'Carros', 'Milfs', 'Uniformes', 'Bondage', 'BDSM', 'Voyeur', 'Roleplay', 'Lencería', 'Juguetes', 'Tríos', 'Anal', 'Oral', 'Amateur'];
 
@@ -36,9 +36,9 @@ function parseDuration(text) {
 
 function formatTotalViews(list) {
   const total = list.reduce((acc, v) => acc + parseViews(v.views), 0);
-  if (total >= 1000000) return `${(total / 1000000).toFixed(1)}M vistas`;
-  if (total >= 1000) return `${Math.round(total / 1000)}K vistas`;
-  return `${total} vistas`;
+  if (total >= 1000000) return `${(total / 1000000).toFixed(1)}M views`;
+  if (total >= 1000) return `${Math.round(total / 1000)}K views`;
+  return `${total} views`;
 }
 
 function InFeedAd() {
@@ -92,6 +92,8 @@ function Drop({ options, value, onChange, extraIcon }) {
 
 export default function FetichesClient() {
   const router = useRouter();
+  const { locale, t } = useLanguage();
+  const videos = getContenido(locale).videos;
   const [tab, setTab] = useState('Fetiches');
   const [orden, setOrden] = useState(DROP_ORDEN[0]);
   const [duracion, setDuracion] = useState(DROP_DURACION[0]);
@@ -280,8 +282,8 @@ export default function FetichesClient() {
           <section className={styles.section}>
             <div className={styles.headRow}>
               <div>
-                <h1 className={styles.title}>Fetiches</h1>
-                <p className={styles.subtitle}>{videos.length} videos • {totalViews}</p>
+                <h1 className={styles.title}>{t('nav.fetiches')}</h1>
+                <p className={styles.subtitle}>{videos.length} {t('secciones.videos')} • {totalViews}</p>
               </div>
               <div className={styles.toolbar}>
                 <Drop options={DROP_ORDEN} value={orden} onChange={(v) => { setOrden(v); setPage(1); }} />
@@ -295,12 +297,12 @@ export default function FetichesClient() {
                 <input
                   className={styles.searchInput}
                   type="text"
-                  placeholder="Buscar fetiche, video o canal..."
+                  placeholder="Search fetish, video or channel..."
                   value={query}
                   onChange={(e) => { setQuery(e.target.value); setPage(1); }}
                 />
                 {query && (
-                  <button className={styles.searchClear} type="button" aria-label="Limpiar búsqueda" onClick={() => setQuery('')}>
+                  <button className={styles.searchClear} type="button" aria-label="Clear search" onClick={() => setQuery('')}>
                     <ion-icon name="close-outline" suppressHydrationWarning></ion-icon>
                   </button>
                 )}
@@ -345,7 +347,7 @@ export default function FetichesClient() {
 
             {!isFiltering && (
               <div className={styles.topSection}>
-                <h2 className={styles.sectionTitle}>Los 10 más vistos</h2>
+                <h2 className={styles.sectionTitle}>{t('secciones.topVistos')}</h2>
                 <div className={styles.topViewport}>
                   <div className={styles.row} ref={rowRef}>
                     {top10.map(renderCard)}
@@ -356,7 +358,7 @@ export default function FetichesClient() {
                     <button
                       className={`${styles.edgeBtn} ${styles.edgeBtnLeft}`}
                       type="button"
-                      aria-label="Anterior"
+                      aria-label="Previous"
                       onClick={() => scrollRow(-1)}
                     >
                       <ion-icon name="chevron-back-outline" className={styles.navIcon} suppressHydrationWarning></ion-icon>
@@ -366,7 +368,7 @@ export default function FetichesClient() {
                     <button
                       className={`${styles.edgeBtn} ${styles.edgeBtnRight}`}
                       type="button"
-                      aria-label="Siguiente"
+                      aria-label="Next"
                       onClick={() => scrollRow(1)}
                     >
                       <ion-icon name="chevron-forward-outline" className={styles.navIcon} suppressHydrationWarning></ion-icon>
@@ -383,20 +385,20 @@ export default function FetichesClient() {
             )}
 
             <div className={styles.allHead}>
-              <h2 className={styles.sectionTitle}>{isFiltering ? 'Resultados' : 'Todos los fetiches'}</h2>
+              <h2 className={styles.sectionTitle}>{isFiltering ? t('filtros.resultados') : 'All fetishes'}</h2>
               <div className={styles.allHeadRight}>
                 {isFiltering && (
                   <button className={styles.clearFiltersBtn} type="button" onClick={clearFilters}>
                     <ion-icon name="close-circle-outline" suppressHydrationWarning></ion-icon>
-                    Borrar filtros
+                    {t('filtros.borrar')}
                   </button>
                 )}
-                <span className={styles.count}>{list.length} videos</span>
+                <span className={styles.count}>{list.length} {t('secciones.videos')}</span>
               </div>
             </div>
 
             {list.length === 0 ? (
-              <p className={styles.empty}>No hay videos con esos filtros por ahora.</p>
+              <p className={styles.empty}>{t('secciones.sinResultados')}</p>
             ) : (
               <div className={styles.grid}>
                 {groups}
@@ -410,7 +412,7 @@ export default function FetichesClient() {
               type="button"
               disabled={safePage <= 1}
               onClick={() => goPage(safePage - 1)}
-              aria-label="Página anterior"
+              aria-label={t('paginacion.anterior')}
             >
               <ion-icon name="chevron-back-outline" suppressHydrationWarning></ion-icon>
             </button>
@@ -429,7 +431,7 @@ export default function FetichesClient() {
               type="button"
               disabled={safePage >= totalPages}
               onClick={() => goPage(safePage + 1)}
-              aria-label="Página siguiente"
+              aria-label={t('paginacion.siguiente')}
             >
               <ion-icon name="chevron-forward-outline" suppressHydrationWarning></ion-icon>
             </button>

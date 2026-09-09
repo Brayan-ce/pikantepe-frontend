@@ -2,8 +2,11 @@
 
 import { useEffect } from 'react';
 import styles from './anuncio.module.css';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 
 export default function AdNative({ containerId, src }) {
+  const { t } = useLanguage();
+  
   useEffect(() => {
     if (!containerId || !src) return;
     const flag = `__adNativeLoaded_${containerId}`;
@@ -18,7 +21,7 @@ export default function AdNative({ containerId, src }) {
 
   return (
     <div className={styles.wrapper}>
-      <span className={styles.label}>ANUNCIO</span>
+      <span className={styles.label}>{t('anuncio.label')}</span>
       <div id={containerId} />
     </div>
   );

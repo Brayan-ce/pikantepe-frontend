@@ -3,14 +3,15 @@
 import { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './carrusel.module.css';
-import data from '@/data/data.json';
+import { getContenido } from '@/data/datos';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 import Preview from '@/_Pages/main/Home/componentes/preview';
-
-const videos = data.videos.slice(0, 8);
 
 export default function Carrusel() {
   const trackRef = useRef(null);
   const router = useRouter();
+  const { locale, t } = useLanguage();
+  const videos = getContenido(locale).videos.slice(0, 8);
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(true);
 
@@ -40,13 +41,13 @@ export default function Carrusel() {
     <section className={styles.section}>
       <div className={styles.header}>
         <div className={styles.titleWrap}>
-          <h2 className={styles.title}>Tendencias ahora</h2>
+          <h2 className={styles.title}>{t('secciones.tendenciasAhora')}</h2>
           <ion-icon name="flame" className={styles.flameIcon} suppressHydrationWarning></ion-icon>
         </div>
 
         <div className={styles.actions}>
           <a href="/tendencias" className={styles.verMas}>
-            Ver más
+            {t('secciones.verMas')}
             <ion-icon name="arrow-forward-outline" className={styles.verMasIcon} suppressHydrationWarning></ion-icon>
           </a>
         </div>

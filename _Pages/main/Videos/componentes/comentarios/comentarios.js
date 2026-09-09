@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import styles from './comentarios.module.css';
-import data from '@/data/data.json';
-
-const SEED = data.comments.default;
+import { getContenido } from '@/data/datos';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 
 export default function Comentarios({ videoId }) {
+  const { locale, t } = useLanguage();
+  const data = getContenido(locale);
+  const SEED = data.comments.default;
   const [comments, setComments] = useState(data.comments[String(videoId)] || SEED);
   const [draft, setDraft] = useState('');
   const [sort, setSort] = useState('top');
@@ -17,7 +19,7 @@ export default function Comentarios({ videoId }) {
     const text = draft.trim();
     if (!text) return;
     setComments((prev) => [
-      { id: Date.now(), user: 'Tú', time: 'ahora mismo', text, likes: 0, replies: [] },
+      { id: Date.now(), user: 'You', time: 'just now', text, likes: 0, replies: [] },
       ...prev,
     ]);
     setDraft('');
@@ -46,21 +48,21 @@ export default function Comentarios({ videoId }) {
   return (
     <section className={styles.box}>
       <div className={styles.head}>
-        <h3 className={styles.title}>{comments.length} comentarios</h3>
+        <h3 className={styles.title}>{comments.length} {t('comentarios.titulo')}</h3>
         <div className={styles.sortBtns}>
           <button
             className={`${styles.sortBtn} ${sort === 'top' ? styles.sortActive : ''}`}
             type="button"
             onClick={() => setSort('top')}
           >
-            Más relevantes
+            {t('comentarios.relevantes')}
           </button>
           <button
             className={`${styles.sortBtn} ${sort === 'new' ? styles.sortActive : ''}`}
             type="button"
             onClick={() => setSort('new')}
           >
-            Más recientes
+            {t('comentarios.recientes')}
           </button>
         </div>
       </div>
@@ -71,21 +73,21 @@ export default function Comentarios({ videoId }) {
           <input
             className={styles.input}
             type="text"
-            placeholder="Comentarios en mantenimiento..."
+            placeholder={t('comentarios.agrega')}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             disabled
           />
           <div className={styles.addActions}>
             <button className={styles.cancelBtn} type="button" onClick={() => setDraft('')} disabled>
-              Cancelar
+              {t('comentarios.cancelar')}
             </button>
             <button
               className={styles.postBtn}
               type="button"
               disabled
             >
-              Comentar
+              {t('comentarios.comentar')}
             </button>
           </div>
         </div>
@@ -107,7 +109,7 @@ export default function Comentarios({ videoId }) {
                   className={`${styles.likeBtn} ${likedIds[c.id] ? styles.liked : ''}`}
                   type="button"
                   onClick={() => toggleLike(c.id)}
-                  aria-label="Me gusta en comentario"
+                  aria-label="Like comment"
                 >
                   <ion-icon name={likedIds[c.id] ? 'thumbs-up-sharp' : 'thumbs-up-outline'} className={styles.likeIcon} suppressHydrationWarning></ion-icon>
                   {c.likes}
@@ -118,10 +120,10 @@ export default function Comentarios({ videoId }) {
                 {c.replies.length > 0 && (
                   <button className={styles.repliesToggle} type="button" onClick={() => toggleReplies(c.id)}>
                     <ion-icon name={openReplies[c.id] ? 'chevron-up-outline' : 'chevron-down-outline'} className={styles.likeIcon} suppressHydrationWarning></ion-icon>
-                    {c.replies.length} {c.replies.length === 1 ? 'respuesta' : 'respuestas'}
+                    {c.replies.length} {c.replies.length === 1 ? t('comentarios.respuesta') : t('comentarios.respuestas')}
                   </button>
                 )}
-                <button className={styles.replyBtn} type="button">Responder</button>
+                <button className={styles.replyBtn} type="button">{t('comentarios.responder')}</button>
               </div>
               {openReplies[c.id] && c.replies.length > 0 && (
                 <div className={styles.replies}>
@@ -146,11 +148,11 @@ export default function Comentarios({ videoId }) {
         <div className={styles.lockOverlay}>
           <div className={styles.lockCard}>
             <ion-icon name="construct-outline" className={styles.lockIcon} suppressHydrationWarning></ion-icon>
-            <p className={styles.lockTitle}>Comentarios en mantenimiento</p>
-            <p className={styles.lockText}>En unos días lo habilitaremos</p>
+            <p className={styles.lockTitle}>{t('comentarios.mantenimiento')}</p>
+            <p className={styles.lockText}>{t('comentarios.mantenimientoSub')}</p>
             <p className={styles.lockFav}>
               <ion-icon name="star-outline" className={styles.lockStar} suppressHydrationWarning></ion-icon>
-              Guarda la aplicación en tus favoritos
+              {t('comentarios.favoritos')}
             </p>
           </div>
         </div>

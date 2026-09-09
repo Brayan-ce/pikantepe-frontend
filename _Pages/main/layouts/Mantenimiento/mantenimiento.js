@@ -3,9 +3,11 @@
 import { useEffect } from 'react';
 import styles from './mantenimiento.module.css';
 import { useSidebar } from '@/app/sidebarContext.js';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 
 export default function MantenimientoModal() {
   const { maintOpen, closeMaint } = useSidebar();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (!maintOpen) return;
@@ -24,19 +26,18 @@ export default function MantenimientoModal() {
         className={styles.card}
         role="dialog"
         aria-modal="true"
-        aria-label="Sección en mantenimiento"
+        aria-label={t('mantenimiento.titulo')}
         onClick={(e) => e.stopPropagation()}
       >
         <div className={styles.iconWrap}>
           <ion-icon name="construct-outline" className={styles.icon} suppressHydrationWarning></ion-icon>
         </div>
-        <h3 className={styles.title}>Sección en mantenimiento</h3>
+        <h3 className={styles.title}>{t('mantenimiento.titulo')}</h3>
         <p className={styles.text}>
-          Estamos trabajando en esta sección.
-          Estará disponible en unas horas o en 1 a 2 días.
+          {t('mantenimiento.texto')}
         </p>
         <button className={styles.btn} type="button" onClick={closeMaint}>
-          Entendido
+          {t('mantenimiento.entendido')}
         </button>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import Header from '@/_Pages/main/layouts/Header/Header';
 import Sidebar from '@/_Pages/main/layouts/headerLateralIzquierdo';
-import VideosClient from '@/_Pages/main/Videos/videos.js';
+import HentaiPlayer from '@/_Pages/main/Hentai/hentaiPlayer';
 import styles from '@/app/(main)/page.module.css';
 import { getContenido } from '@/data/datos';
 import { cookies } from 'next/headers';
@@ -10,10 +10,8 @@ async function getLocale() {
   return c === 'en' ? 'en' : 'es';
 }
 
-function findVideo(data, id) {
-  return [...data.videos, ...(data.hentai || []), ...(data.fetiches || [])].find(
-    (v) => String(v.id) === String(id)
-  );
+function findHentai(data, id) {
+  return data.hentai?.find((h) => String(h.id) === String(id));
 }
 
 function toInfo(entry) {
@@ -31,22 +29,22 @@ function toInfo(entry) {
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
-  const entry = findVideo(getContenido(await getLocale()), id);
-  if (!entry) return { title: 'Video no encontrado' };
+  const entry = findHentai(getContenido(await getLocale()), id);
+  if (!entry) return { title: 'Anime not found' };
   const title = entry.title;
   const description = `${entry.viewsFull || entry.views || ''} • ${entry.channel || ''}`.trim();
   return {
     title,
-    description: description || `Mira ${title} en pikante pe`,
+    description: description || `Watch ${title} on pikante pe`,
     keywords: entry.tags,
-    alternates: { canonical: `/videos/${id}` },
+    alternates: { canonical: `/hentai/${id}` },
     openGraph: { title: `${title} | pikante pe`, description },
   };
 }
 
-export default async function VideoPage({ params }) {
+export default async function HentaiPage({ params }) {
   const { id } = await params;
-  const entry = findVideo(getContenido(await getLocale()), id);
+  const entry = findHentai(getContenido(await getLocale()), id);
   const src = entry?.src || '/videos/1.mov';
 
   return (
@@ -54,7 +52,7 @@ export default async function VideoPage({ params }) {
       <Header />
       <div className={styles.body}>
         <Sidebar />
-        <VideosClient videoId={id} src={src} info={toInfo(entry)} />
+        <HentaiPlayer hentaiId={id} src={src} info={toInfo(entry)} />
       </div>
     </div>
   );

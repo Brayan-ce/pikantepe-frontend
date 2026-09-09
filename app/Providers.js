@@ -1,11 +1,14 @@
 'use client';
 
 import { ThemeProvider } from "@/_Extras/CambiodeColor/ThemeProvider.js";
+import { LanguageProvider } from "@/_Extras/Idioma/LanguageProvider.js";
 
 export default function Providers({ children }) {
   return (
-    <ThemeProvider>
-      {children}
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider>
+        {children}
+      </ThemeProvider>
+    </LanguageProvider>
   );
 }

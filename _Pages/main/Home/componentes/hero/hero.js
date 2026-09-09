@@ -4,39 +4,41 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './hero.module.css';
 import { useTheme } from '@/_Extras/CambiodeColor/ThemeProvider.js';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 
 const suggestions = [
-  { label: 'Tendencias', href: '/tendencias', icon: 'trending-up-outline' },
-  { label: 'Recién subidos', href: '/videos', icon: 'sparkles-outline' },
-  { label: 'Fetiches', href: '/fetiches', icon: 'flame-outline' },
-  { label: 'Packs', href: '/packs', icon: 'cube-outline' },
-  { label: 'Comunidad', href: '/comunidad', icon: 'people-outline' },
+  { label: 'nav.tendencias', href: '/tendencias', icon: 'trending-up-outline' },
+  { label: 'nav.recienSubidos', href: '/videos', icon: 'sparkles-outline' },
+  { label: 'nav.fetiches', href: '/fetiches', icon: 'flame-outline' },
+  { label: 'nav.packs', href: '/packs', icon: 'cube-outline' },
+  { label: 'nav.comunidad', href: '/comunidad', icon: 'people-outline' },
 ];
 
 const slides = [
   {
     id: 'welcome',
-    eyebrow: 'Bienvenidos a la familia',
-    title: 'Hola, esta es tu casa',
-    text: 'Videos, packs, lives y categorías: todo el contenido picante en un solo lugar. Elige por dónde empezar.',
-    primary: { label: 'Explorar tendencias', href: '/tendencias' },
-    secondary: { label: 'Recién subidos', href: '/videos' },
+    eyebrow: 'hero.bienvenida',
+    title: 'hero.holaCasa',
+    text: 'hero.holaSub',
+    primary: { label: 'hero.explorar', href: '/tendencias' },
+    secondary: { label: 'hero.verNuevo', href: '/videos' },
   },
   {
     id: 'aviso',
-    eyebrow: 'Aviso a la comunidad',
-    title: 'Mejoramos cada día',
-    text: 'La aplicación está siendo mantenida y mejorada constantemente. Si vemos bastante apoyo, meteremos más cosas que le gustan a mi comunidad.',
-    primary: { label: 'Ver lo nuevo', href: '/videos' },
+    eyebrow: 'hero.aviso',
+    title: 'hero.mejoramos',
+    text: 'hero.avisoTexto',
+    primary: { label: 'hero.verNuevo', href: '/videos' },
     secondary: null,
   },
 ];
 
-const visualTags = ['película japonesa', 'orgía', 'tendencia', 'JAV', 'trío', 'HD'];
+const visualTags = ['Japanese movie', 'orgy', 'trending', 'JAV', 'threesome', 'HD'];
 
 export default function Hero() {
   const router = useRouter();
   const { isDark } = useTheme();
+  const { t } = useLanguage();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -68,16 +70,16 @@ export default function Hero() {
         {slide.id === 'welcome' ? (
           <span className={styles.logoBadge}>
             <img src={logoSrc} alt="PICANTE.pe" className={styles.logoBadgeImg} />
-            {slide.eyebrow}
+            {t(slide.eyebrow)}
           </span>
         ) : (
           <span className={styles.eyebrow}>
             <ion-icon name="construct-outline" className={styles.eyebrowIcon} suppressHydrationWarning></ion-icon>
-            {slide.eyebrow}
+            {t(slide.eyebrow)}
           </span>
         )}
-        <h2 className={styles.title}>{slide.title}</h2>
-        <p className={styles.text}>{slide.text}</p>
+        <h2 className={styles.title}>{t(slide.title)}</h2>
+        <p className={styles.text}>{t(slide.text)}</p>
 
         {slide.id === 'welcome' && (
           <div className={styles.suggestions}>
@@ -89,7 +91,7 @@ export default function Hero() {
                 onClick={() => router.push(s.href)}
               >
                 <ion-icon name={s.icon} className={styles.suggIcon} suppressHydrationWarning></ion-icon>
-                {s.label}
+                {t(s.label)}
               </button>
             ))}
           </div>
@@ -97,12 +99,12 @@ export default function Hero() {
 
         <div className={styles.ctaRow}>
           <button className={styles.cta} type="button" onClick={() => router.push(slide.primary.href)}>
-            {slide.primary.label}
+            {t(slide.primary.label)}
             <ion-icon name="arrow-forward-outline" className={styles.ctaIcon} suppressHydrationWarning></ion-icon>
           </button>
           {slide.secondary && (
             <button className={styles.ctaGhost} type="button" onClick={() => router.push(slide.secondary.href)}>
-              {slide.secondary.label}
+              {t(slide.secondary.label)}
             </button>
           )}
         </div>
@@ -124,7 +126,7 @@ export default function Hero() {
           <img src="/home/hero1.png" alt="Bienvenida de la familia PICANTE.pe" className={styles.visualImg} />
           <span className={styles.bestBadge}>
             <ion-icon name="star" className={styles.bestIcon} suppressHydrationWarning></ion-icon>
-            MEJOR RECOMENDACIÓN
+            {t('hero.mejorRec')}
           </span>
           <button
             className={styles.playBtn}

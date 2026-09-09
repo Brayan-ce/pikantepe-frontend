@@ -1,8 +1,10 @@
-import data from '@/data/data.json';
+import { getContenido } from '@/data/datos';
 
 const BASE = 'https://pikantepe.com';
 
 export default function sitemap() {
+  // Sitemap en español; las rutas /en se agregan cuando exista routing por locale.
+  const data = getContenido('es');
   const staticRoutes = [
     '',
     '/videos',

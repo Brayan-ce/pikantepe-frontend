@@ -3,14 +3,13 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './todosvideos.module.css';
-import data from '@/data/data.json';
+import { getContenido } from '@/data/datos';
+import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
 import AdBanner from '@/_Pages/main/Home/componentes/anuncio/AdBanner.js';
 import AdNative from '@/_Pages/main/Home/componentes/anuncio/AdNative.js';
 import Preview from '@/_Pages/main/Home/componentes/preview';
 
-const videos = data.videos;
 const PER_PAGE = 16;
-
 const DROP_ORDEN = ['Más recientes', 'Más vistos', 'Más largos', 'Más cortos'];
 const DROP_DURACION = ['Todas', 'Cortos (menos de 8 min)', 'Largos (8 min o más)'];
 
@@ -78,6 +77,8 @@ function Drop({ options, value, onChange, extraIcon }) {
 
 export default function TodosVideosClient() {
   const router = useRouter();
+  const { locale, t } = useLanguage();
+  const videos = getContenido(locale).videos;
   const [page, setPage] = useState(1);
   const [orden, setOrden] = useState(DROP_ORDEN[0]);
   const [duracion, setDuracion] = useState(DROP_DURACION[0]);
@@ -207,8 +208,8 @@ export default function TodosVideosClient() {
         <div className={styles.feed}>
           <div className={styles.headRow}>
             <div>
-              <h1 className={styles.title}>Todos los videos</h1>
-              <p className={styles.count}>{filtered.length} videos • Todo lo que subimos, sin categorías</p>
+              <h1 className={styles.title}>{t('nav.todosVideos')}</h1>
+              <p className={styles.count}>{filtered.length} {t('secciones.videos')} • {t('secciones.todosVideosDesc') || 'Todo lo que subimos, sin categorías'}</p>
             </div>
             <div className={styles.toolbar}>
               <Drop options={DROP_ORDEN} value={orden} onChange={(v) => { setOrden(v); setPage(1); }} />
@@ -222,12 +223,12 @@ export default function TodosVideosClient() {
               <input
                 className={styles.searchInput}
                 type="text"
-                placeholder="Buscar videos..."
+                placeholder={t('header.buscarCorto') || 'Buscar videos...'}
                 value={query}
                 onChange={(e) => { setQuery(e.target.value); setPage(1); }}
               />
               {query && (
-                <button className={styles.searchClear} type="button" aria-label="Limpiar búsqueda" onClick={() => setQuery('')}>
+                <button className={styles.searchClear} type="button" aria-label={t('filtros.limpiar')} onClick={() => setQuery('')}>
                   <ion-icon name="close-outline" suppressHydrationWarning></ion-icon>
                 </button>
               )}
@@ -235,20 +236,20 @@ export default function TodosVideosClient() {
           </div>
 
           <div className={styles.allHead}>
-            <h2 className={styles.sectionTitle}>{isFiltering ? 'Resultados' : 'Videos'}</h2>
+            <h2 className={styles.sectionTitle}>{isFiltering ? t('filtros.resultados') : t('secciones.videos')}</h2>
             <div className={styles.allHeadRight}>
               {isFiltering && (
                 <button className={styles.clearFiltersBtn} type="button" onClick={clearFilters}>
                   <ion-icon name="close-circle-outline" suppressHydrationWarning></ion-icon>
-                  Borrar filtros
+                  {t('filtros.borrar')}
                 </button>
               )}
-              <span className={styles.count}>{filtered.length} videos</span>
+              <span className={styles.count}>{filtered.length} {t('secciones.videos')}</span>
             </div>
           </div>
 
           {filtered.length === 0 ? (
-            <p className={styles.empty}>No hay videos con esos filtros por ahora.</p>
+            <p className={styles.empty}>{t('secciones.sinResultados')}</p>
           ) : (
             <div className={styles.grid}>
               {groups}
@@ -268,7 +269,7 @@ export default function TodosVideosClient() {
               type="button"
               disabled={safePage <= 1}
               onClick={() => goPage(safePage - 1)}
-              aria-label="Página anterior"
+              aria-label={t('paginacion.anterior')}
             >
               <ion-icon name="chevron-back-outline" suppressHydrationWarning></ion-icon>
             </button>
@@ -287,7 +288,7 @@ export default function TodosVideosClient() {
               type="button"
               disabled={safePage >= totalPages}
               onClick={() => goPage(safePage + 1)}
-              aria-label="Página siguiente"
+              aria-label={t('paginacion.siguiente')}
             >
               <ion-icon name="chevron-forward-outline" suppressHydrationWarning></ion-icon>
             </button>

@@ -23,7 +23,7 @@ function fmt(sec) {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
-export default function Reproductor({ src = '/videos/1.mov', theater, onToggleTheater }) {
+export default function HentaiReproductor({ src = '/videos/1.mov', theater, onToggleTheater }) {
   const videoRef = useRef(null);
   const wrapRef = useRef(null);
   const [playing, setPlaying] = useState(false);
@@ -176,17 +176,17 @@ export default function Reproductor({ src = '/videos/1.mov', theater, onToggleTh
         {videoError && (
           <div className={styles.videoError}>
             <ion-icon name="alert-circle-outline" className={styles.videoErrorIcon} suppressHydrationWarning></ion-icon>
-            <p className={styles.videoErrorText}>No se pudo cargar el video</p>
-            <span className={styles.videoErrorSub}>Revisa el archivo o prueba con otra calidad</span>
+            <p className={styles.videoErrorText}>Could not load the anime</p>
+            <span className={styles.videoErrorSub}>Check the file or try another quality</span>
             <button className={styles.videoRetryBtn} type="button" onClick={retry}>
               <ion-icon name="refresh-outline" className={styles.videoRetryIcon} suppressHydrationWarning></ion-icon>
-              Reintentar
+              Retry
             </button>
           </div>
         )}
         {qualityOpen && (
           <div className={styles.qualityMenu}>
-            <p className={styles.qualityTitle}>Calidad</p>
+            <p className={styles.qualityTitle}>Quality</p>
             {QUALITIES.map((q) => (
               <button
                 key={q.label}
@@ -203,7 +203,7 @@ export default function Reproductor({ src = '/videos/1.mov', theater, onToggleTh
           </div>
         )}
         <div className={styles.controls}>
-          <div className={styles.progress} onClick={seek} role="slider" aria-label="Progreso" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100} tabIndex={0}
+          <div className={styles.progress} onClick={seek} role="slider" aria-label="Progress" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100} tabIndex={0}
             onKeyDown={(e) => { if (e.key === 'ArrowRight' && videoRef.current) videoRef.current.currentTime += 5; if (e.key === 'ArrowLeft' && videoRef.current) videoRef.current.currentTime -= 5; }}>
             <div className={styles.bufferedFill} style={{ width: `${Math.min(Math.max(buffered, 0), 1) * 100}%` }} />
             <div className={styles.progressFill} style={{ width: `${pct}%` }}>
@@ -212,14 +212,14 @@ export default function Reproductor({ src = '/videos/1.mov', theater, onToggleTh
           </div>
           <div className={styles.controlsRow}>
             <div className={styles.controlsLeft}>
-              <button className={styles.ctrlBtn} type="button" aria-label={playing ? 'Pausar' : 'Reproducir'} onClick={togglePlay}>
+              <button className={styles.ctrlBtn} type="button" aria-label={playing ? 'Pause' : 'Play'} onClick={togglePlay}>
                 <ion-icon name={playing ? 'pause-sharp' : 'play-sharp'} className={styles.ctrlIcon} suppressHydrationWarning></ion-icon>
               </button>
-              <button className={styles.ctrlBtn} type="button" aria-label="Siguiente video">
+              <button className={styles.ctrlBtn} type="button" aria-label="Next anime">
                 <ion-icon name="play-skip-forward-sharp" className={styles.ctrlIcon} suppressHydrationWarning></ion-icon>
               </button>
               <div className={styles.volumeWrap}>
-                <button className={styles.ctrlBtn} type="button" aria-label={muted ? 'Activar sonido' : 'Silenciar'} onClick={toggleMute}>
+                <button className={styles.ctrlBtn} type="button" aria-label={muted ? 'Unmute' : 'Mute'} onClick={toggleMute}>
                   <ion-icon name={volumeIcon()} className={styles.ctrlIcon} suppressHydrationWarning></ion-icon>
                 </button>
                 <input
@@ -230,7 +230,7 @@ export default function Reproductor({ src = '/videos/1.mov', theater, onToggleTh
                   step="0.05"
                   value={muted ? 0 : volume}
                   onChange={changeVolume}
-                  aria-label="Volumen"
+                  aria-label="Volume"
                   style={{
                     background: `linear-gradient(to right, #F20D16 ${(muted ? 0 : volume) * 100}%, rgba(242,13,22,0.22) ${(muted ? 0 : volume) * 100}%)`,
                   }}
@@ -239,17 +239,17 @@ export default function Reproductor({ src = '/videos/1.mov', theater, onToggleTh
               <span className={styles.time}>{fmt(current)} / {fmt(duration)}</span>
             </div>
             <div className={styles.controlsRight}>
-              <button className={styles.speedBtn} type="button" aria-label="Velocidad" onClick={cycleSpeed}>{speed}x</button>
-              <button className={`${styles.ctrlBtn} ${qualityOpen ? styles.ctrlActive : ''}`} type="button" aria-label="Calidad del video" onClick={() => setQualityOpen((p) => !p)}>
+              <button className={styles.speedBtn} type="button" aria-label="Speed" onClick={cycleSpeed}>{speed}x</button>
+              <button className={`${styles.ctrlBtn} ${qualityOpen ? styles.ctrlActive : ''}`} type="button" aria-label="Quality" onClick={() => setQualityOpen((p) => !p)}>
                 <ion-icon name="settings-sharp" className={styles.ctrlIcon} suppressHydrationWarning></ion-icon>
               </button>
-              <button className={styles.ctrlBtn} type="button" aria-label="Mini reproductor" onClick={togglePip}>
+              <button className={styles.ctrlBtn} type="button" aria-label="Mini player" onClick={togglePip}>
                 <ion-icon name="albums-outline" className={styles.ctrlIcon} suppressHydrationWarning></ion-icon>
               </button>
-              <button className={`${styles.ctrlBtn} ${theater ? styles.ctrlActive : ''}`} type="button" aria-label="Modo teatro" onClick={onToggleTheater}>
+              <button className={`${styles.ctrlBtn} ${theater ? styles.ctrlActive : ''}`} type="button" aria-label="Theater mode" onClick={onToggleTheater}>
                 <ion-icon name="square-outline" className={styles.ctrlIcon} suppressHydrationWarning></ion-icon>
               </button>
-              <button className={styles.ctrlBtn} type="button" aria-label="Pantalla completa" onClick={toggleFullscreen}>
+              <button className={styles.ctrlBtn} type="button" aria-label="Fullscreen" onClick={toggleFullscreen}>
                 <ion-icon name="expand-sharp" className={styles.ctrlIcon} suppressHydrationWarning></ion-icon>
               </button>
             </div>
