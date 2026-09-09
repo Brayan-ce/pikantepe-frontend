@@ -1,0 +1,385 @@
+'use client';
+
+import { Fragment, useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import styles from './hentai.module.css';
+import data from '@/data/data.json';
+import AdBanner from '@/_Pages/main/Home/componentes/anuncio/AdBanner.js';
+import AdNative from '@/_Pages/main/Home/componentes/anuncio/AdNative.js';
+import Preview from '@/_Pages/main/Home/componentes/preview';
+
+const videos = [...data.hentai, ...data.videos];
+const PER_PAGE = 16;
+
+const DROP_ORDEN = ['Más recientes', 'Más vistos', 'Más largos', 'Más cortos'];
+const DROP_DURACION = ['Todas', 'Cortos (menos de 8 min)', 'Largos (8 min o más)'];
+
+function parseViews(text) {
+  const m = String(text).match(/([\d,.]+)\s*K?/i);
+  if (!m) return 0;
+  const n = parseFloat(m[1].replace(',', '.'));
+  return /K/i.test(text) ? n * 1000 : n;
+}
+
+function parseDuration(text) {
+  const parts = String(text).split(':').map(Number);
+  if (parts.some(Number.isNaN)) return 0;
+  return parts.reduce((acc, p) => acc * 60 + p, 0);
+}
+
+function InFeedAd() {
+  return (
+    <div className={styles.adRow}>
+      <AdBanner
+        adKey="e483940fff110a871ea3ba9b07dd3259"
+        width={728}
+        height={90}
+        src="https://www.highrevenueformat.com/e483940fff110a871ea3ba9b07dd3259/invoke.js"
+      />
+    </div>
+  );
+}
+
+function Drop({ options, value, onChange, extraIcon }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className={styles.dropWrap}>
+      <button
+        className={`${styles.dropBtn} ${open ? styles.dropOpen : ''}`}
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+      >
+        {value}
+        <ion-icon name="chevron-down-outline" className={styles.dropChevron} suppressHydrationWarning></ion-icon>
+        {extraIcon && (
+          <ion-icon name="options-outline" className={styles.dropOptions} suppressHydrationWarning></ion-icon>
+        )}
+      </button>
+      {open && (
+        <div className={styles.dropMenu}>
+          {options.map((op) => (
+            <button
+              key={op}
+              className={`${styles.dropItem} ${op === value ? styles.dropItemActive : ''}`}
+              type="button"
+              onClick={() => {
+                onChange(op);
+                setOpen(false);
+              }}
+            >
+              {op}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function HentaiClient() {
+  const router = useRouter();
+  const [page, setPage] = useState(1);
+  const [orden, setOrden] = useState(DROP_ORDEN[0]);
+  const [duracion, setDuracion] = useState(DROP_DURACION[0]);
+  const [query, setQuery] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(true);
+  const rowRef = useRef(null);
+
+  // Querys propias (?q=, ?orden=, ?duracion=, ?page=).
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    const q = p.get('q');
+    if (q) setQuery(q);
+    const o = p.get('orden');
+    if (o && DROP_ORDEN.includes(o)) setOrden(o);
+    const d = p.get('duracion');
+    if (d && DROP_DURACION.includes(d)) setDuracion(d);
+    const pg = Number(p.get('page'));
+    if (Number.isInteger(pg) && pg >= 1) setPage(pg);
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const p = new URLSearchParams();
+      if (query.trim()) p.set('q', query.trim());
+      if (orden !== DROP_ORDEN[0]) p.set('orden', orden);
+      if (duracion !== DROP_DURACION[0]) p.set('duracion', duracion);
+      if (page > 1) p.set('page', String(page));
+      const qs = p.toString();
+      router.replace(qs ? `/hentai?${qs}` : '/hentai', { scroll: false });
+    }, 400);
+    return () => clearTimeout(t);
+  }, [query, orden, duracion, page, router]);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    setIsMobile(mq.matches);
+    const onChange = (e) => setIsMobile(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  useEffect(() => {
+    const el = rowRef.current;
+    if (!el) return;
+    function update() {
+      setCanLeft(el.scrollLeft > 8);
+      setCanRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 8);
+    }
+    update();
+    el.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      el.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+
+  const perRowGroup = isMobile ? 4 : 8;
+  const isFiltering =
+    query.trim() !== '' ||
+    orden !== DROP_ORDEN[0] ||
+    duracion !== DROP_DURACION[0];
+
+  const top10 = [...videos].sort((a, b) => parseViews(b.views) - parseViews(a.views)).slice(0, 10);
+
+  let filtered = [...videos];
+  const q = query.trim().toLowerCase();
+  if (q) filtered = filtered.filter((v) => v.title.toLowerCase().includes(q) || v.channel.toLowerCase().includes(q));
+  if (orden === 'Más vistos') filtered.sort((a, b) => parseViews(b.views) - parseViews(a.views));
+  else if (orden === 'Más largos') filtered.sort((a, b) => parseDuration(b.duration) - parseDuration(a.duration));
+  else if (orden === 'Más cortos') filtered.sort((a, b) => parseDuration(a.duration) - parseDuration(b.duration));
+  if (duracion === 'Cortos (menos de 8 min)') filtered = filtered.filter((v) => parseDuration(v.duration) < 480);
+  if (duracion === 'Largos (8 min o más)') filtered = filtered.filter((v) => parseDuration(v.duration) >= 480);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+
+  function goPage(p) {
+    const next = Math.min(Math.max(1, p), totalPages);
+    setPage(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function go(id) {
+    router.push(`/videos/${id}`);
+  }
+
+  function scrollRow(dir = 1) {
+    const el = rowRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth * 0.8, behavior: 'smooth' });
+  }
+
+  function clearFilters() {
+    setQuery('');
+    setOrden(DROP_ORDEN[0]);
+    setDuracion(DROP_DURACION[0]);
+    setPage(1);
+  }
+
+  function renderCard(video) {
+    return (
+      <article
+        key={video.id}
+        className={styles.card}
+        role="link"
+        tabIndex={0}
+        onClick={() => go(video.id)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            go(video.id);
+          }
+        }}
+      >
+        <Preview src={video.src} thumb={video.thumb}>
+          <span className={styles.playOverlay}>
+            <ion-icon name="play" className={styles.playIcon} suppressHydrationWarning></ion-icon>
+          </span>
+          <span className={styles.duration}>{video.duration}</span>
+        </Preview>
+        <div className={styles.info}>
+          <h3 className={styles.cardTitle}>{video.title}</h3>
+          <p className={styles.metaLine}>
+            <span className={styles.creator}>{video.channel}</span>
+            <ion-icon name="checkmark-circle" className={styles.verified} suppressHydrationWarning></ion-icon>
+            <span className={styles.dot}>•</span>
+            <span>{video.views}</span>
+            <span className={styles.dot}>•</span>
+            <span>{video.time}</span>
+          </p>
+        </div>
+      </article>
+    );
+  }
+
+  const list = filtered.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
+
+  const groups = [];
+  for (let i = 0; i < list.length; i += perRowGroup) {
+    groups.push(
+      <Fragment key={`g-${i}`}>
+        {list.slice(i, i + perRowGroup).map(renderCard)}
+        <InFeedAd key={`ad-${i}`} />
+      </Fragment>
+    );
+  }
+
+  return (
+    <main className={styles.main}>
+      <div className={styles.layout2col}>
+        <div className={styles.feed}>
+          <div className={styles.headRow}>
+            <div>
+              <h1 className={styles.title}>Hentai</h1>
+              <p className={styles.count}>{filtered.length} animes • Todo el hentai sin categorías</p>
+            </div>
+            <div className={styles.toolbar}>
+              <Drop options={DROP_ORDEN} value={orden} onChange={(v) => { setOrden(v); setPage(1); }} />
+              <Drop options={DROP_DURACION} value={duracion} onChange={(v) => { setDuracion(v); setPage(1); }} extraIcon />
+            </div>
+          </div>
+
+          <div className={styles.searchRow}>
+            <div className={styles.searchBox}>
+              <ion-icon name="search-outline" className={styles.searchIcon} suppressHydrationWarning></ion-icon>
+              <input
+                className={styles.searchInput}
+                type="text"
+                placeholder="Buscar anime..."
+                value={query}
+                onChange={(e) => { setQuery(e.target.value); setPage(1); }}
+              />
+              {query && (
+                <button className={styles.searchClear} type="button" aria-label="Limpiar búsqueda" onClick={() => setQuery('')}>
+                  <ion-icon name="close-outline" suppressHydrationWarning></ion-icon>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {!isFiltering && (
+            <div className={styles.topSection}>
+              <h2 className={styles.sectionTitle}>Los 10 más vistos</h2>
+              <div className={styles.topViewport}>
+                <div className={styles.row} ref={rowRef}>
+                  {top10.map(renderCard)}
+                </div>
+                {canLeft && <div className={`${styles.edge} ${styles.edgeLeft}`} aria-hidden="true" />}
+                {canRight && <div className={`${styles.edge} ${styles.edgeRight}`} aria-hidden="true" />}
+                {canLeft && (
+                  <button
+                    className={`${styles.edgeBtn} ${styles.edgeBtnLeft}`}
+                    type="button"
+                    aria-label="Anterior"
+                    onClick={() => scrollRow(-1)}
+                  >
+                    <ion-icon name="chevron-back-outline" className={styles.navIcon} suppressHydrationWarning></ion-icon>
+                  </button>
+                )}
+                {canRight && (
+                  <button
+                    className={`${styles.edgeBtn} ${styles.edgeBtnRight}`}
+                    type="button"
+                    aria-label="Siguiente"
+                    onClick={() => scrollRow(1)}
+                  >
+                    <ion-icon name="chevron-forward-outline" className={styles.navIcon} suppressHydrationWarning></ion-icon>
+                  </button>
+                )}
+              </div>
+              <AdBanner
+                adKey="e483940fff110a871ea3ba9b07dd3259"
+                width={728}
+                height={90}
+                src="https://www.highrevenueformat.com/e483940fff110a871ea3ba9b07dd3259/invoke.js"
+              />
+            </div>
+          )}
+
+          <div className={styles.allHead}>
+            <h2 className={styles.sectionTitle}>{isFiltering ? 'Resultados' : 'Todos los animes'}</h2>
+            <div className={styles.allHeadRight}>
+              {isFiltering && (
+                <button className={styles.clearFiltersBtn} type="button" onClick={clearFilters}>
+                  <ion-icon name="close-circle-outline" suppressHydrationWarning></ion-icon>
+                  Borrar filtros
+                </button>
+              )}
+              <span className={styles.count}>{filtered.length} animes</span>
+            </div>
+          </div>
+
+          {filtered.length === 0 ? (
+            <p className={styles.empty}>No hay animes con esos filtros por ahora.</p>
+          ) : (
+            <div className={styles.grid}>
+              {groups}
+            </div>
+          )}
+
+          <AdBanner
+            adKey="e483940fff110a871ea3ba9b07dd3259"
+            width={728}
+            height={90}
+            src="https://www.highrevenueformat.com/e483940fff110a871ea3ba9b07dd3259/invoke.js"
+          />
+
+          <div className={styles.pagination}>
+            <button
+              className={styles.pageBtn}
+              type="button"
+              disabled={safePage <= 1}
+              onClick={() => goPage(safePage - 1)}
+              aria-label="Página anterior"
+            >
+              <ion-icon name="chevron-back-outline" suppressHydrationWarning></ion-icon>
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <button
+                key={p}
+                className={`${styles.pageBtn} ${p === safePage ? styles.pageActive : ''}`}
+                type="button"
+                onClick={() => goPage(p)}
+              >
+                {p}
+              </button>
+            ))}
+            <button
+              className={styles.pageBtn}
+              type="button"
+              disabled={safePage >= totalPages}
+              onClick={() => goPage(safePage + 1)}
+              aria-label="Página siguiente"
+            >
+              <ion-icon name="chevron-forward-outline" suppressHydrationWarning></ion-icon>
+            </button>
+          </div>
+        </div>
+
+        <aside className={styles.rail}>
+          <AdBanner
+            adKey="78e0b2ea56da0940de81bef223de03b3"
+            width={160}
+            height={600}
+            src="https://www.highrevenueformat.com/78e0b2ea56da0940de81bef223de03b3/invoke.js"
+            marco
+          />
+          <AdBanner
+            adKey="3a837969e396afcbcfc39bb7494cfe37"
+            width={300}
+            height={250}
+            src="https://www.highrevenueformat.com/3a837969e396afcbcfc39bb7494cfe37/invoke.js"
+          />
+          <AdNative
+            containerId="container-889d5bee4d5085ec8e0d5a960c034651"
+            src="https://pl31251694.profitableratecpmnetwork.com/889d5bee4d5085ec8e0d5a960c034651/invoke.js"
+          />
+        </aside>
+      </div>
+    </main>
+  );
+}

@@ -1,0 +1,84 @@
+.layout {
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--bg, #050505);
+  padding-top: 80px; /* fixed header height */
+}
+
+/* Fondo: ondas delgadas rojas con degradado + resplandor tenue abajo-izquierda */
+.pageBg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 40% 32% at 6% 100%, rgba(225, 29, 72, 0.16), transparent 70%),
+    radial-gradient(ellipse 34% 26% at 94% 8%, rgba(225, 29, 72, 0.12), transparent 70%),
+    radial-gradient(ellipse 26% 30% at 92% 55%, rgba(220, 38, 38, 0.08), transparent 70%);
+}
+
+.waves {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  opacity: 0.9;
+}
+
+.wavesBottom {
+  bottom: 0;
+  height: 38vh;
+  min-height: 220px;
+  animation: waveDrift 14s ease-in-out infinite alternate;
+}
+
+.wavesTop {
+  top: 0;
+  height: 30vh;
+  min-height: 170px;
+  opacity: 0.7;
+  animation: waveDriftTop 18s ease-in-out infinite alternate;
+}
+
+@keyframes waveDrift {
+  from { transform: translateX(-1.5%); }
+  to { transform: translateX(1.5%); }
+}
+
+@keyframes waveDriftTop {
+  from { transform: translateX(1.5%); }
+  to { transform: translateX(-1.5%); }
+}
+
+.body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  margin-left: 250px; /* fixed sidebar width */
+}
+
+.body > :last-child {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .layout {
+    padding-top: 56px; /* fixed mobile header height */
+  }
+
+  .body {
+    flex-direction: column;
+    margin-left: 0; /* sidebar is an off-canvas drawer on mobile */
+  }
+
+  .body > :last-child {
+    width: 100%;
+  }
+}
+
+/* En modo claro se suaviza el glow para no ensuciar el fondo blanco */
+[data-theme="light"] .pageBg {
+  opacity: 0.35;
+}
