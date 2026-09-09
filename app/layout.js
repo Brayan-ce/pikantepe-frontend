@@ -15,19 +15,31 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  metadataBase: new URL('https://pikantepe.com'),
+  metadataBase: new URL('https://www.pikantepe.com'),
   title: {
-    default: 'pikante pe — Videos, packs y comunidad',
+    default: 'pikante pe — Videos, packs y comunidad picante',
     template: '%s | pikante pe',
   },
   description:
-    'pikante pe: descubre videos, packs exclusivos, transmisiones en vivo y comunidad. El mejor contenido picante en un solo lugar.',
-  keywords: ['videos', 'packs', 'comunidad', 'tendencias', 'fetiches', 'hentai', 'en vivo', 'picante'],
-  authors: [{ name: 'pikante pe' }],
+    'pikante pe: la plataforma peruana de videos, packs exclusivos, fetiches, hentai y comunidad en vivo. Contenido picante seleccionado, tendencias y más. Descubre lo mejor en pikantepe.com.',
+  keywords: ['pikante pe', 'pikantepe', 'videos', 'packs', 'fetiches', 'hentai', 'tendencias', 'comunidad', 'en vivo', 'contenido picante peru'],
+  authors: [{ name: 'pikante pe', url: 'https://www.pikantepe.com' }],
   creator: 'pikante pe',
+  publisher: 'pikante pe',
+  category: 'entertainment',
+  alternates: {
+    canonical: 'https://www.pikantepe.com',
+  },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
   },
   icons: {
     icon: '/logo.png',
@@ -36,19 +48,22 @@ export const metadata = {
   openGraph: {
     type: 'website',
     locale: 'es_PE',
-    url: 'https://pikantepe.com',
+    url: 'https://www.pikantepe.com',
     siteName: 'pikante pe',
-    title: 'pikante pe — Videos, packs y comunidad',
+    title: 'pikante pe — Videos, packs y comunidad picante',
     description:
-      'Descubre videos, packs exclusivos, transmisiones en vivo y comunidad en pikante pe',
-    images: [{ url: '/logo.png', alt: 'pikante pe' }],
+      'Descubre videos, packs exclusivos, fetiches, hentai y comunidad en vivo en pikante pe. El mejor contenido picante peruano.',
+    images: [{ url: '/logo.png', width: 512, height: 512, alt: 'pikante pe logo' }],
   },
   twitter: {
-    card: 'summary',
-    title: 'pikante pe — Videos, packs y comunidad',
+    card: 'summary_large_image',
+    title: 'pikante pe — Videos, packs y comunidad picante',
     description:
-      'Descubre videos, packs exclusivos, transmisiones en vivo y comunidad en pikante pe',
+      'Videos, packs, fetiches y hentai en pikante pe. Únete a la comunidad.',
     images: ['/logo.png'],
+  },
+  verification: {
+    // añade tu código de Search Console cuando lo tengas: google: 'xxx'
   },
 };
 
@@ -69,6 +84,15 @@ export default function RootLayout({ children }) {
           }}
         />
         {/* End Google Tag Manager */}
+        {/* Google tag (gtag.js) - G-C710M1Y33Q */}
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-C710M1Y33Q" strategy="afterInteractive" />
+        <Script
+          id="gtag-config"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-C710M1Y33Q');`,
+          }}
+        />
       </head>
       <body>
         {/* Google Tag Manager (noscript) */}

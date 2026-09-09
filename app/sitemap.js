@@ -1,6 +1,6 @@
 import { getContenido } from '@/data/datos';
 
-const BASE = 'https://pikantepe.com';
+const BASE = 'https://www.pikantepe.com';
 
 export default function sitemap() {
   // Sitemap en español; las rutas /en se agregan cuando exista routing por locale.
