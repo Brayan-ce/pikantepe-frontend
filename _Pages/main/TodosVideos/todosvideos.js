@@ -172,9 +172,6 @@ export default function TodosVideosClient() {
         }}
       >
         <Preview src={video.src} thumb={video.thumb}>
-          <span className={styles.playOverlay}>
-            <ion-icon name="play" className={styles.playIcon} suppressHydrationWarning></ion-icon>
-          </span>
           <span className={styles.duration}>{video.duration}</span>
         </Preview>
         <div className={styles.info}>
@@ -258,13 +255,6 @@ export default function TodosVideosClient() {
             </div>
           )}
 
-          <AdBanner
-            adKey="e483940fff110a871ea3ba9b07dd3259"
-            width={728}
-            height={90}
-            src="https://www.highrevenueformat.com/e483940fff110a871ea3ba9b07dd3259/invoke.js"
-          />
-
           <div className={styles.pagination}>
             <button
               className={styles.pageBtn}
@@ -295,6 +285,13 @@ export default function TodosVideosClient() {
               <ion-icon name="chevron-forward-outline" suppressHydrationWarning></ion-icon>
             </button>
           </div>
+
+          <AdBanner
+            adKey="e483940fff110a871ea3ba9b07dd3259"
+            width={728}
+            height={90}
+            src="https://www.highrevenueformat.com/e483940fff110a871ea3ba9b07dd3259/invoke.js"
+          />
         </div>
 
         <aside className={styles.rail}>

@@ -6,19 +6,17 @@
   min-height: calc(100vh - 80px);
   width: 100%;
   font-family: system-ui, -apple-system, sans-serif;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
 }
 
 .headRow {
-  max-width: 1600px;
-  margin: 0 auto;
+  max-width: 100%;
   width: 100%;
+  box-sizing: border-box;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
+  min-width: 0;
 }
 
 .title {
@@ -116,14 +114,19 @@
 }
 
 .searchRow {
-  max-width: 1600px;
-  margin: 0 auto;
+  max-width: 100%;
   width: 100%;
+  box-sizing: border-box;
   display: flex;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .searchBox {
-  flex: 1;
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  max-width: 100%;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -132,6 +135,8 @@
   border-radius: 10px;
   padding: 0 14px;
   transition: border-color 0.2s ease;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .searchBox:focus-within {
@@ -296,62 +301,33 @@
 }
 
 .card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  background-color: var(--bg-card, #121215);
+  border: 1px solid var(--border, #27272A);
+  border-radius: 10px;
+  overflow: hidden;
   cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary, #F20D16);
 }
 
 .thumb {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  background: radial-gradient(circle at center, var(--bg-surface, #27272A) 0%, var(--bg-card, #121215) 100%);
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid transparent;
-  transition: border-color 0.2s ease, transform 0.2s ease;
-}
-
-.card:hover .thumb {
-  border-color: var(--primary, #F20D16);
-  transform: translateY(-2px);
-}
-
-.playOverlay {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.card:hover .playOverlay {
-  background-color: var(--primary, #F20D16);
-  transform: scale(1.08);
-}
-
-.playIcon {
-  font-size: 16px;
-  color: #FFFFFF;
-  margin-left: 2px;
+  background-color: var(--bg-surface, #18181B);
 }
 
 .duration {
   position: absolute;
-  top: 8px;
+  bottom: 8px;
   right: 8px;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.85);
   color: #FFFFFF;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   padding: 2px 6px;
   border-radius: 4px;
@@ -412,7 +388,7 @@
 
 /* Light theme */
 [data-theme="light"] .thumb {
-  background: radial-gradient(circle at center, #E4E4E7 0%, #F4F4F5 100%);
+  background-color: #E4E4E7;
 }
 
 [data-theme="light"] .title,
@@ -425,6 +401,10 @@
 @media (max-width: 1400px) {
   .rail {
     display: none;
+  }
+
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -444,18 +424,9 @@
     font-size: 20px;
   }
 
-  .filterBtn {
-    font-size: 13px;
-    padding: 9px 14px;
-  }
-
   .grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
-  }
-
-  .moreFilters {
-    display: none;
   }
 }
 
@@ -464,7 +435,7 @@
     padding: 12px;
   }
 
-  .tab {
-    font-size: 13px;
+  .cardTitle {
+    font-size: 12px;
   }
 }
