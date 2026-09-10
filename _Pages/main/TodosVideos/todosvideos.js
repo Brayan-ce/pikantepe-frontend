@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './todosvideos.module.css';
 import { getContenido } from '@/data/datos';
@@ -78,15 +78,18 @@ function Drop({ options, value, onChange, extraIcon }) {
 export default function TodosVideosClient() {
   const router = useRouter();
   const { locale, t } = useLanguage();
-  const videos = getContenido(locale).videos;
+  const videos = useMemo(() => getContenido(locale).videos, [locale]);
   const [page, setPage] = useState(1);
   const [orden, setOrden] = useState(DROP_ORDEN[0]);
   const [duracion, setDuracion] = useState(DROP_DURACION[0]);
   const [query, setQuery] = useState('');
   const [isMobile, setIsMobile] = useState(false);
+  const didInitRef = useRef(false);
+  const prevQsRef = useRef('');
 
-  // Querys propias (?q=, ?orden=, ?duracion=, ?page=).
+  // Lee URL solo una vez al montar (evita loop con el effect de escritura)
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const p = new URLSearchParams(window.location.search);
     const q = p.get('q');
     if (q) setQuery(q);
@@ -96,9 +99,13 @@ export default function TodosVideosClient() {
     if (d && DROP_DURACION.includes(d)) setDuracion(d);
     const pg = Number(p.get('page'));
     if (Number.isInteger(pg) && pg >= 1) setPage(pg);
+    prevQsRef.current = window.location.search.slice(1);
+    didInitRef.current = true;
   }, []);
 
+  // Escribe URL solo si cambió y no es el primer mount (idempotente, rompe loop infinito solo en /videos)
   useEffect(() => {
+    if (!didInitRef.current) return;
     const t = setTimeout(() => {
       const p = new URLSearchParams();
       if (query.trim()) p.set('q', query.trim());
@@ -106,6 +113,8 @@ export default function TodosVideosClient() {
       if (duracion !== DROP_DURACION[0]) p.set('duracion', duracion);
       if (page > 1) p.set('page', String(page));
       const qs = p.toString();
+      if (qs === prevQsRef.current) return;
+      prevQsRef.current = qs;
       router.replace(qs ? `/videos?${qs}` : '/videos', { scroll: false });
     }, 400);
     return () => clearTimeout(t);
@@ -125,18 +134,21 @@ export default function TodosVideosClient() {
     orden !== DROP_ORDEN[0] ||
     duracion !== DROP_DURACION[0];
 
-  let filtered = [...videos];
-  const q = query.trim().toLowerCase();
-  if (q) filtered = filtered.filter((v) => v.title.toLowerCase().includes(q) || v.channel.toLowerCase().includes(q));
-  if (orden === 'Más recientes') filtered.sort((a, b) => Number(b.id) - Number(a.id));
-  else if (orden === 'Más vistos') filtered.sort((a, b) => parseViews(b.views) - parseViews(a.views));
-  else if (orden === 'Más largos') filtered.sort((a, b) => parseDuration(b.duration) - parseDuration(a.duration));
-  else if (orden === 'Más cortos') filtered.sort((a, b) => parseDuration(a.duration) - parseDuration(b.duration));
-  else filtered.sort((a, b) => Number(b.id) - Number(a.id));
-  if (duracion === 'Cortos (menos de 8 min)') filtered = filtered.filter((v) => parseDuration(v.duration) < 480);
-  if (duracion === 'Largos (8 min o más)') filtered = filtered.filter((v) => parseDuration(v.duration) >= 480);
+  const filtered = useMemo(() => {
+    let f = [...videos];
+    const q = query.trim().toLowerCase();
+    if (q) f = f.filter((v) => v.title.toLowerCase().includes(q) || v.channel.toLowerCase().includes(q));
+    if (orden === 'Más recientes') f.sort((a, b) => Number(b.id) - Number(a.id));
+    else if (orden === 'Más vistos') f.sort((a, b) => parseViews(b.views) - parseViews(a.views));
+    else if (orden === 'Más largos') f.sort((a, b) => parseDuration(b.duration) - parseDuration(a.duration));
+    else if (orden === 'Más cortos') f.sort((a, b) => parseDuration(a.duration) - parseDuration(b.duration));
+    else f.sort((a, b) => Number(b.id) - Number(a.id));
+    if (duracion === 'Cortos (menos de 8 min)') f = f.filter((v) => parseDuration(v.duration) < 480);
+    if (duracion === 'Largos (8 min o más)') f = f.filter((v) => parseDuration(v.duration) >= 480);
+    return f;
+  }, [videos, query, orden, duracion]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const totalPages = useMemo(() => Math.max(1, Math.ceil(filtered.length / PER_PAGE)), [filtered.length]);
   const safePage = Math.min(page, totalPages);
 
   function goPage(p) {
