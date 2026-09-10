@@ -10,13 +10,6 @@ import AdNative from '@/_Pages/main/Home/componentes/anuncio/AdNative.js';
 import Preview from '@/_Pages/main/Home/componentes/preview';
 
 const PER_PAGE = 16;
-const TABS = ['Fetiches', 'Látex', 'Pies', 'Carros', 'Milfs', 'Uniformes', 'Bondage', 'BDSM', 'Voyeur', 'Roleplay', 'Lencería', 'Juguetes', 'Tríos', 'Anal', 'Oral', 'Amateur'];
-
-const FETISH_BY_ID = {
-  1: ['Tríos', 'Oral'],
-  2: ['Amateur', 'Voyeur'],
-  3: ['Amateur', 'Voyeur'],
-};
 
 const DROP_ORDEN = ['Más vistos', 'Nuevos primero', 'Antiguos primero'];
 const DROP_DURACION = ['Todas', 'Cortos (menos de 8 min)', 'Largos (8 min o más)'];
@@ -94,6 +87,10 @@ export default function FetichesClient() {
   const router = useRouter();
   const { locale, t } = useLanguage();
   const videos = getContenido(locale).videos;
+  const data = getContenido(locale);
+  const baseFetichesAll = [...videos].filter((v) => v.isFetiche);
+  const dynamicCats = (data.feticheCategorias && data.feticheCategorias.length ? data.feticheCategorias : [...new Set(baseFetichesAll.map((v)=> v.feticheCategoria).filter(Boolean))]);
+  const TABS = ['Fetiches', ...dynamicCats];
   const [tab, setTab] = useState('Fetiches');
   const [orden, setOrden] = useState(DROP_ORDEN[0]);
   const [duracion, setDuracion] = useState(DROP_DURACION[0]);
@@ -179,7 +176,7 @@ export default function FetichesClient() {
     };
   }, []);
 
-  const totalViews = formatTotalViews(videos);
+  const totalViews = formatTotalViews(baseFetichesAll);
 
   const isFiltering =
     query.trim() !== '' ||
@@ -187,7 +184,7 @@ export default function FetichesClient() {
     orden !== DROP_ORDEN[0] ||
     duracion !== DROP_DURACION[0];
 
-  const baseFetiches = [...videos].filter((v) => v.isFetiche);
+  const baseFetiches = baseFetichesAll;
   const top10 = [...baseFetiches].sort((a, b) => parseViews(b.views) - parseViews(a.views)).slice(0, 10);
 
   let list = tab === 'Fetiches' ? [...baseFetiches] : baseFetiches.filter((v) => String(v.feticheCategoria||'').toLowerCase() === tab.toLowerCase() || (v.tags||[]).some(t=> String(t).toLowerCase()===tab.toLowerCase()));
@@ -284,7 +281,7 @@ export default function FetichesClient() {
             <div className={styles.headRow}>
               <div>
                 <h1 className={styles.title}>{t('nav.fetiches')}</h1>
-                <p className={styles.subtitle}>{videos.length} {t('secciones.videos')} • {totalViews}</p>
+                <p className={styles.subtitle}>{baseFetichesAll.length} {t('secciones.videos')} • {totalViews}</p>
               </div>
               <div className={styles.toolbar}>
                 <Drop options={DROP_ORDEN} value={orden} onChange={(v) => { setOrden(v); setPage(1); }} />
