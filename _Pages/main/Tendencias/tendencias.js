@@ -46,7 +46,7 @@ export default function TendenciasClient() {
 
   const perRowGroup = isMobile ? 4 : 8;
 
-  const list = [...data.videos].sort((a, b) => parseViews(b.views) - parseViews(a.views));
+  const list = [...data.videos].filter((v) => v.isTendencia).sort((a, b) => parseViews(b.views) - parseViews(a.views));
   const totalPages = Math.max(1, Math.ceil(list.length / 16));
 
   // ?page= compartible: lee al entrar y sincroniza al cambiar.

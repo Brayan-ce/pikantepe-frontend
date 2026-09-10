@@ -187,14 +187,15 @@ export default function FetichesClient() {
     orden !== DROP_ORDEN[0] ||
     duracion !== DROP_DURACION[0];
 
-  const top10 = [...videos].sort((a, b) => parseViews(b.views) - parseViews(a.views)).slice(0, 10);
+  const baseFetiches = [...videos].filter((v) => v.isFetiche);
+  const top10 = [...baseFetiches].sort((a, b) => parseViews(b.views) - parseViews(a.views)).slice(0, 10);
 
-  let list = tab === 'Fetiches' ? [...videos] : videos.filter((v) => (FETISH_BY_ID[v.id] || []).includes(tab));
+  let list = tab === 'Fetiches' ? [...baseFetiches] : baseFetiches.filter((v) => String(v.feticheCategoria||'').toLowerCase() === tab.toLowerCase() || (v.tags||[]).some(t=> String(t).toLowerCase()===tab.toLowerCase()));
   const q = query.trim().toLowerCase();
   if (q) list = list.filter((v) => v.title.toLowerCase().includes(q) || v.channel.toLowerCase().includes(q));
   if (orden === 'Más vistos') list.sort((a, b) => parseViews(b.views) - parseViews(a.views));
-  else if (orden === 'Nuevos primero') list.sort((a, b) => a.id - b.id);
-  else list.sort((a, b) => b.id - a.id);
+  else if (orden === 'Nuevos primero') list.sort((a, b) => Number(b.id) - Number(a.id));
+  else if (orden === 'Antiguos primero') list.sort((a, b) => Number(a.id) - Number(b.id));
   if (duracion === 'Cortos (menos de 8 min)') list = list.filter((v) => parseDuration(v.duration) < 480);
   if (duracion === 'Largos (8 min o más)') list = list.filter((v) => parseDuration(v.duration) >= 480);
 

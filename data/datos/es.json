@@ -41,7 +41,10 @@
       "desc": "La mejor recomendación de la casa: una película japonesa en familia que es tendencia en la comunidad.",
       "src": "/videos/fetiches/fetiche_01.mp4",
       "download": "/videos/fetiches/fetiche_01.mp4",
-      "thumb": "/videos/thumb_fetiches/fetiche_01.png"
+      "thumb": "/videos/thumb_fetiches/fetiche_01.png",
+      "isFetiche": true,
+      "feticheCategoria": "Japonesa",
+      "isTendencia": true
     },
     {
       "id": 2,
@@ -61,7 +64,10 @@
       "desc": "El video de Kchame que está rompiendo el internet, viral en todos lados.",
       "src": "/videos/fetiches/fetiche_02.mp4",
       "download": "/videos/fetiches/fetiche_02.mp4",
-      "thumb": "/videos/thumb_fetiches/fetiche_02.png"
+      "thumb": "/videos/thumb_fetiches/fetiche_02.png",
+      "isFetiche": true,
+      "feticheCategoria": "Viral",
+      "isTendencia": true
     },
     {
       "id": 3,
@@ -81,214 +87,187 @@
       "desc": "El video de Zully que pidió la Bbaarmy, recién salido del horno.",
       "src": "/videos/fetiches/fetiche_03.mp4",
       "download": "/videos/fetiches/fetiche_03.mp4",
-      "thumb": "/videos/thumb_fetiches/fetiche_03.png"
+      "thumb": "/videos/thumb_fetiches/fetiche_03.png",
+      "isFetiche": true,
+      "feticheCategoria": "Pedido",
+      "isTendencia": true
+    },
+    {
+      "id": 4,
+      "channel": "administrador pikante.pe",
+      "views": "0 vistas",
+      "viewsFull": "0 vistas",
+      "date": "9 de setiembre de 2026",
+      "time": "hace 1 minuto",
+      "duration": "08:36",
+      "since": "9/2026",
+      "src": "/videos/fetiches/fetiche_04.mp4",
+      "download": "/videos/fetiches/fetiche_04.mp4",
+      "thumb": "/videos/thumb_fetiches/fetiche_04.png",
+      "isFetiche": true,
+      "feticheCategoria": "Latex",
+      "isTendencia": true,
+      "title": "Nena gritona en latex",
+      "tags": [
+        "Latex",
+        "HD",
+        "Tendencia",
+        "Fetiche",
+        "Rosadita",
+        "Gritona",
+        "Vaginal"
+      ],
+      "desc": "Nena gritona en latex, Me encanto el video disfrutenlo",
+      "titleEn": "Nena gritona en latex",
+      "descEn": "Nena gritona en latex, Me encanto el video disfrutenlo"
+    },
+    {
+      "id": 5,
+      "channel": "administrador pikante.pe",
+      "views": "0 vistas",
+      "viewsFull": "0 vistas",
+      "date": "9 de setiembre de 2026",
+      "time": "hace 1 minuto",
+      "duration": "05:55",
+      "since": "9/2026",
+      "src": "/videos/videos/video_005.mp4",
+      "download": "/videos/videos/video_005.mp4",
+      "thumb": "/videos/thumb_videos/video_005.png",
+      "isFetiche": false,
+      "feticheCategoria": "",
+      "isTendencia": false,
+      "title": "Sedienta de PENE XD (lit)",
+      "tags": [
+        "HD",
+        "Oral",
+        "Gritona",
+        "Vaginal",
+        "Insaciable"
+      ],
+      "desc": "Una chica que tenia ganas de una buena metida"
+    },
+    {
+      "id": 6,
+      "channel": "administrador pikante.pe",
+      "views": "0 vistas",
+      "viewsFull": "0 vistas",
+      "date": "9 de setiembre de 2026",
+      "time": "hace 1 minuto",
+      "duration": "02:50",
+      "since": "9/2026",
+      "src": "/videos/fetiches/fetiche_06.mp4",
+      "download": "/videos/fetiches/fetiche_06.mp4",
+      "thumb": "/videos/thumb_fetiches/fetiche_06.png",
+      "isFetiche": true,
+      "feticheCategoria": "En carro",
+      "isTendencia": false,
+      "title": "En el carro, rico",
+      "tags": [
+        "En carro",
+        "Fetiche",
+        "Vaginal"
+      ],
+      "desc": ""
+    },
+    {
+      "id": 7,
+      "channel": "administrador pikante.pe",
+      "views": "0 vistas",
+      "viewsFull": "0 vistas",
+      "date": "9 de setiembre de 2026",
+      "time": "hace 1 minuto",
+      "duration": "00:53",
+      "since": "9/2026",
+      "src": "/videos/videos/video_007.mp4",
+      "download": "/videos/videos/video_007.mp4",
+      "thumb": "/videos/thumb_videos/video_007.png",
+      "isFetiche": false,
+      "feticheCategoria": "",
+      "isTendencia": false,
+      "title": "Borracha Vengandose 😈",
+      "tags": [
+        "Borracha",
+        "Fetiche",
+        "HD",
+        "Oral",
+        "Vaginal",
+        "Argentina"
+      ],
+      "desc": "Una chica muy borracha que se venga de su ex XD loquillas son las chicas"
+    },
+    {
+      "id": 8,
+      "channel": "administrador pikante.pe",
+      "views": "0 vistas",
+      "viewsFull": "0 vistas",
+      "date": "9 de setiembre de 2026",
+      "time": "hace 1 minuto",
+      "duration": "00:39",
+      "since": "9/2026",
+      "src": "/videos/videos/video_008.mp4",
+      "download": "/videos/videos/video_008.mp4",
+      "thumb": "/videos/thumb_videos/video_008.png",
+      "isFetiche": false,
+      "feticheCategoria": "",
+      "isTendencia": false,
+      "title": "Trio con masoquista",
+      "tags": [
+        "trío",
+        "Oral",
+        "Vaginal"
+      ],
+      "desc": "Una chica masoquista donde el revientan el culo"
+    },
+    {
+      "id": 9,
+      "channel": "administrador pikante.pe",
+      "views": "0 vistas",
+      "viewsFull": "0 vistas",
+      "date": "9 de setiembre de 2026",
+      "time": "hace 1 minuto",
+      "duration": "00:18",
+      "since": "9/2026",
+      "src": "/videos/videos/video_009.mp4",
+      "download": "/videos/videos/video_009.mp4",
+      "thumb": "/videos/thumb_videos/video_009.png",
+      "isFetiche": false,
+      "feticheCategoria": "",
+      "isTendencia": false,
+      "title": "Japonesa con DILDOO",
+      "tags": [
+        "Japonesa",
+        "Dildo",
+        "Masturbacion"
+      ],
+      "desc": "Rica japonesa con una dild"
+    },
+    {
+      "id": 10,
+      "channel": "administrador pikante.pe",
+      "views": "0 vistas",
+      "viewsFull": "0 vistas",
+      "date": "9 de setiembre de 2026",
+      "time": "hace 1 minuto",
+      "duration": "00:40",
+      "since": "9/2026",
+      "src": "/videos/fetiches/fetiche_10.mp4",
+      "download": "/videos/fetiches/fetiche_10.mp4",
+      "thumb": "/videos/thumb_fetiches/fetiche_10.png",
+      "isFetiche": true,
+      "feticheCategoria": "Obligada",
+      "isTendencia": true,
+      "title": "Obligada :(",
+      "tags": [
+        "Obligada",
+        "NTR?",
+        "Fetiche",
+        "Tendencia",
+        "Vaginal"
+      ],
+      "desc": "Una chica obligada, mientas su marido mira, no se si sentir pena o no pero F :("
     }
   ],
-  "hentai": [
-    {
-      "id": 201,
-      "title": "La elfa y el héroe caído",
-      "channel": "Studio Kitsune",
-      "views": "98K vistas",
-      "viewsFull": "98,410 vistas",
-      "date": "5 de septiembre, 2026",
-      "time": "hace 2 horas",
-      "duration": "23:45",
-      "since": "09/2026",
-      "tags": [
-        "Elfa",
-        "Fantasía",
-        "HD"
-      ],
-      "desc": "Un héroe caído encuentra refugio con una elfa que cambiará su destino."
-    },
-    {
-      "id": 202,
-      "title": "Colegiala en apuros",
-      "channel": "Sakura Films",
-      "views": "76K vistas",
-      "viewsFull": "76,120 vistas",
-      "date": "4 de septiembre, 2026",
-      "time": "hace 6 horas",
-      "duration": "21:10",
-      "since": "09/2026",
-      "tags": [
-        "Colegiala",
-        "Romance",
-        "HD"
-      ],
-      "desc": "El último día de clases termina de la forma más inesperada."
-    },
-    {
-      "id": 203,
-      "title": "Isekai prohibido",
-      "channel": "Otaku Dreams",
-      "views": "145K vistas",
-      "viewsFull": "145,930 vistas",
-      "date": "3 de septiembre, 2026",
-      "time": "hace 1 día",
-      "duration": "24:02",
-      "since": "08/2026",
-      "tags": [
-        "Isekai",
-        "Fantasía",
-        "4K"
-      ],
-      "desc": "Reencarnado en un mundo donde todo está permitido."
-    },
-    {
-      "id": 204,
-      "title": "La maid perfecta",
-      "channel": "NekoHouse",
-      "views": "64K vistas",
-      "viewsFull": "64,300 vistas",
-      "date": "2 de septiembre, 2026",
-      "time": "hace 1 día",
-      "duration": "19:48",
-      "since": "08/2026",
-      "tags": [
-        "Maid",
-        "Comedia",
-        "HD"
-      ],
-      "desc": "Una maid que cumple todos los deseos de su amo, sin excepción."
-    },
-    {
-      "id": 205,
-      "title": "Sensei secreta",
-      "channel": "Sensei Prod",
-      "views": "112K vistas",
-      "viewsFull": "112,760 vistas",
-      "date": "1 de septiembre, 2026",
-      "time": "hace 2 días",
-      "duration": "22:31",
-      "since": "08/2026",
-      "tags": [
-        "Maestra",
-        "Romance",
-        "HD"
-      ],
-      "desc": "Después de clases, la sensei revela su verdadera vocación."
-    },
-    {
-      "id": 206,
-      "title": "Noche de nekomimis",
-      "channel": "NekoHouse",
-      "views": "58K vistas",
-      "viewsFull": "58,940 vistas",
-      "date": "31 de agosto, 2026",
-      "time": "hace 3 días",
-      "duration": "20:15",
-      "tags": [
-        "Neko",
-        "Fantasía",
-        "HD"
-      ],
-      "desc": "Una noche con las chicas gato más traviesas del barrio."
-    },
-    {
-      "id": 207,
-      "title": "El dojo al anochecer",
-      "channel": "Hana Studio",
-      "views": "83K vistas",
-      "viewsFull": "83,510 vistas",
-      "date": "30 de agosto, 2026",
-      "time": "hace 4 días",
-      "duration": "23:02",
-      "since": "08/2026",
-      "tags": [
-        "Dojo",
-        "Acción",
-        "4K"
-      ],
-      "desc": "El entrenamiento nocturno del dojo esconde más de lo que parece."
-    },
-    {
-      "id": 208,
-      "title": "Sakura ardiente",
-      "channel": "Sakura Films",
-      "views": "91K vistas",
-      "viewsFull": "91,270 vistas",
-      "date": "29 de agosto, 2026",
-      "time": "hace 5 días",
-      "duration": "21:44",
-      "since": "08/2026",
-      "tags": [
-        "Romance",
-        "Drama",
-        "HD"
-      ],
-      "desc": "Bajo los cerezos en flor nace una historia que arde."
-    },
-    {
-      "id": 209,
-      "title": "Demonia enamorada",
-      "channel": "Otaku Dreams",
-      "views": "134K vistas",
-      "viewsFull": "134,680 vistas",
-      "date": "28 de agosto, 2026",
-      "time": "hace 6 días",
-      "duration": "24:20",
-      "since": "08/2026",
-      "tags": [
-        "Demonio",
-        "Fantasía",
-        "4K"
-      ],
-      "desc": "Un pacto con una demonia que pide más de lo acordado."
-    },
-    {
-      "id": 210,
-      "title": "Idol tras bambalinas",
-      "channel": "Sensei Prod",
-      "views": "70K vistas",
-      "viewsFull": "70,050 vistas",
-      "date": "27 de agosto, 2026",
-      "time": "hace 1 semana",
-      "duration": "20:58",
-      "since": "08/2026",
-      "tags": [
-        "Idol",
-        "Backstage",
-        "HD"
-      ],
-      "desc": "Lo que pasa tras bambalinas con la idol del momento."
-    },
-    {
-      "id": 211,
-      "title": "Viaje a la playa privada",
-      "channel": "Hana Studio",
-      "views": "66K vistas",
-      "viewsFull": "66,390 vistas",
-      "date": "26 de agosto, 2026",
-      "time": "hace 1 semana",
-      "duration": "22:12",
-      "since": "08/2026",
-      "tags": [
-        "Playa",
-        "Verano",
-        "HD"
-      ],
-      "desc": "Un viaje a la playa privada que se sale de control."
-    },
-    {
-      "id": 212,
-      "title": "La bruja del bosque",
-      "channel": "Studio Kitsune",
-      "views": "88K vistas",
-      "viewsFull": "88,720 vistas",
-      "date": "25 de agosto, 2026",
-      "time": "hace 2 semanas",
-      "duration": "23:36",
-      "since": "08/2026",
-      "tags": [
-        "Bruja",
-        "Fantasía",
-        "4K"
-      ],
-      "desc": "Quien entra al bosque de la bruja no sale igual."
-    }
-  ],
+  "hentai": [],
   "community": [
     {
       "id": 101,
@@ -657,5 +636,22 @@
         "replies": []
       }
     ]
-  }
+  },
+  "feticheCategorias": [
+    "HD",
+    "JAV",
+    "Japonesa",
+    "Orgía",
+    "Pedido",
+    "Tendencia",
+    "Viral",
+    "orgía",
+    "película japonesa",
+    "tendencia",
+    "trío",
+    "latex",
+    "Latex",
+    "En carro",
+    "Obligada"
+  ]
 }

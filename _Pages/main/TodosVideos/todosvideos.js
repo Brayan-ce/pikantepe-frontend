@@ -128,9 +128,11 @@ export default function TodosVideosClient() {
   let filtered = [...videos];
   const q = query.trim().toLowerCase();
   if (q) filtered = filtered.filter((v) => v.title.toLowerCase().includes(q) || v.channel.toLowerCase().includes(q));
-  if (orden === 'Más vistos') filtered.sort((a, b) => parseViews(b.views) - parseViews(a.views));
+  if (orden === 'Más recientes') filtered.sort((a, b) => Number(b.id) - Number(a.id));
+  else if (orden === 'Más vistos') filtered.sort((a, b) => parseViews(b.views) - parseViews(a.views));
   else if (orden === 'Más largos') filtered.sort((a, b) => parseDuration(b.duration) - parseDuration(a.duration));
   else if (orden === 'Más cortos') filtered.sort((a, b) => parseDuration(a.duration) - parseDuration(b.duration));
+  else filtered.sort((a, b) => Number(b.id) - Number(a.id));
   if (duracion === 'Cortos (menos de 8 min)') filtered = filtered.filter((v) => parseDuration(v.duration) < 480);
   if (duracion === 'Largos (8 min o más)') filtered = filtered.filter((v) => parseDuration(v.duration) >= 480);
 

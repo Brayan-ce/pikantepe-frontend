@@ -11,7 +11,10 @@ export default function Carrusel() {
   const trackRef = useRef(null);
   const router = useRouter();
   const { locale, t } = useLanguage();
-  const videos = getContenido(locale).videos.slice(0, 8);
+  const allVideos = getContenido(locale).videos;
+  const tendencias = [...allVideos].filter(v=>v.isTendencia).sort((a,b)=> Number(b.id)-Number(a.id));
+  const base = tendencias.length ? tendencias : [...allVideos].sort((a,b)=> Number(b.id)-Number(a.id));
+  const videos = base.slice(0, 8);
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(true);
 

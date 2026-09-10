@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import styles from './hero.module.css';
 import { useTheme } from '@/_Extras/CambiodeColor/ThemeProvider.js';
 import { useLanguage } from '@/_Extras/Idioma/LanguageProvider.js';
+import { getContenido } from '@/data/datos';
 
 const suggestions = [
   { label: 'nav.tendencias', href: '/tendencias', icon: 'trending-up-outline' },
@@ -33,16 +34,24 @@ const slides = [
   },
 ];
 
-const visualTags = ['Japanese movie', 'orgy', 'trending', 'JAV', 'threesome', 'HD'];
-
 export default function Hero() {
   const router = useRouter();
   const { isDark } = useTheme();
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [rec, setRec] = useState(null);
 
   const logoSrc = isDark ? '/logo.png' : '/logo_oscuro.png';
+
+  useEffect(() => {
+    try{
+      const data = getContenido(locale);
+      const tendencias = (data.videos||[]).filter(v=>v.isTendencia).sort((a,b)=> Number(b.id)-Number(a.id));
+      const newest = [...(data.videos||[])].sort((a,b)=> Number(b.id)-Number(a.id));
+      setRec(tendencias[0] || newest[0] || null);
+    }catch{}
+  }, [locale]);
 
   useEffect(() => {
     if (paused) return;
@@ -115,15 +124,15 @@ export default function Hero() {
           className={styles.visualMedia}
           role="link"
           tabIndex={0}
-          onClick={() => router.push('/videos/fetiches/1')}
+          onClick={() => router.push(rec ? `/videos/${rec.id}` : '/videos/fetiches/1')}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              router.push('/videos/fetiches/1');
+              router.push(rec ? `/videos/${rec.id}` : '/videos/fetiches/1');
             }
           }}
         >
-          <img src="/home/hero1.png" alt="Bienvenida de la familia PICANTE.pe" className={styles.visualImg} />
+          <img src={rec?.thumb || rec?.src ? rec.thumb : "/home/hero1.png"} alt={rec?.title || "Bienvenida de la familia PICANTE.pe"} className={styles.visualImg} onError={(e)=>{e.currentTarget.src="/home/hero1.png"}} />
           <span className={styles.bestBadge}>
             <ion-icon name="star" className={styles.bestIcon} suppressHydrationWarning></ion-icon>
             {t('hero.mejorRec')}
@@ -134,16 +143,16 @@ export default function Hero() {
             aria-label="Reproducir video recomendado"
             onClick={(e) => {
               e.stopPropagation();
-              router.push('/videos/fetiches/1');
+              router.push(rec ? `/videos/${rec.id}` : '/videos/fetiches/1');
             }}
           >
             <ion-icon name="play-sharp" className={styles.playIcon} suppressHydrationWarning></ion-icon>
           </button>
         </div>
         <div className={styles.visualFoot}>
-          <h3 className={styles.visualTitle}>Familia Japonesa :3</h3>
+          <h3 className={styles.visualTitle}>{rec?.title || 'Familia Japonesa :3'}</h3>
           <div className={styles.visualTags}>
-            {visualTags.map((tag) => (
+            {(rec?.tags?.length ? rec.tags : ['trending','HD','JAV']).slice(0,6).map((tag) => (
               <button
                 key={tag}
                 className={styles.visualTag}
